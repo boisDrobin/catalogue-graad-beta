@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Catalogue commercial des sessions</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800&display=swap"
+    rel="stylesheet"
+  >
+
+  <link rel="stylesheet" href="style.css">
+
+  <script src="https://cdn.jsdelivr.net/npm/papaparse@5.4.1/papaparse.min.js"></script>
+</head>
+
+<body>
+  <header class="site-header">
+    <div class="container">
+      <div class="hero">
+        <div class="hero-logo-wrap">
+          <img
+            class="hero-logo"
+            src="https://graad-sante.fr/app/uploads/2024/09/LOGO_GRAAD_SANTE_GOLD-1024x455.png"
+            alt="Logo Graad Santé"
+          >
+        </div>
+
+        <div class="hero-actions">
+          <a
+            class="hero-button"
+            href="./faq.html"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Mémo commercial
+          </a>
+
+          <a
+            class="hero-button"
+            href="https://boisdrobin.github.io/Calculateur-indem-ANDPC/"
+            target="_blank"
+            rel="noopener noreferrer"
+          >
+            Calculateur ANDPC
+          </a>
+        </div>
+
+        <div class="hero-content">
+          <p class="eyebrow">Catalogue interne</p>
+          <h1>Catalogue commercial des formations</h1>
+          <p class="subtitle" id="subtitle-text">
+            Données issues d’un export Zoho CRM
+          </p>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="filters-panel">
+      <div class="public-block">
+        <div class="block-head">
+          <h2>Choisir un public</h2>
+          <p>Sélectionnez un public pour filtrer rapidement les formations disponibles.</p>
+        </div>
+
+        <div class="public-switcher" role="group" aria-label="Choix du public">
+          <button type="button" class="public-pill" data-public-value="">Tous</button>
+          <button type="button" class="public-pill is-active" data-public-value="medecins">Médecins</button>
+          <button type="button" class="public-pill" data-public-value="infirmiers">Infirmiers</button>
+          <button type="button" class="public-pill" data-public-value="pharmaciens">Pharmaciens</button>
+          <button type="button" class="public-pill" data-public-value="sages-femmes">Sages-femmes</button>
+          <button type="button" class="public-pill" data-public-value="kines">Kinésithérapeutes</button>
+          <button type="button" class="public-pill" data-public-value="dentistes">Dentistes</button>
+        </div>
+      </div>
+
+      <div class="advanced-filters">
+        <div class="block-head">
+          <h2>Affiner les résultats</h2>
+        </div>
+
+        <div class="filters-grid">
+          <div class="filter-group">
+            <label for="filter-specialty">Spécialité médicale</label>
+            <select id="filter-specialty" disabled>
+              <option value="">Aucune</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-format">Format</label>
+            <select id="filter-format">
+              <option value="">Tous</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-type-action">Type d’action</label>
+            <select id="filter-type-action">
+              <option value="">Tous</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-typologie">Typologie</label>
+            <select id="filter-typologie">
+              <option value="">Toutes</option>
+            </select>
+          </div>
+
+          <div class="filter-group filter-search">
+            <label for="search">Recherche</label>
+            <div class="search-wrap">
+              <span aria-hidden="true">⌕</span>
+              <input
+                type="text"
+                id="search"
+                placeholder="Titre, dépôt, session, formateur..."
+              >
+            </div>
+          </div>
+        </div>
+
+        <div class="filters-footer">
+          <div class="view-tabs" role="tablist" aria-label="Choix de la vue">
+            <button type="button" class="view-tab is-active" data-view="catalogue">
+              Vue catalogue
+            </button>
+            <button type="button" class="view-tab" data-view="calendrier">
+              Vue calendrier
+            </button>
+          </div>
+
+          <button type="button" class="reset-button" id="reset-filters">
+            Réinitialiser les filtres
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <section class="topbar">
+      <p id="results-count">Chargement...</p>
+    </section>
+
+    <section id="catalogue-view" class="cards"></section>
+
+    <section id="calendar-view" class="calendar-view" hidden></section>
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
