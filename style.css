@@ -51,6 +51,10 @@ body {
   margin: 0 auto;
 }
 
+.is-hidden {
+  display: none !important;
+}
+
 /* HEADER */
 
 .site-header {
@@ -623,7 +627,7 @@ h1 {
   background: #8a7944;
 }
 
-/* SESSION CARDS INSIDE FORMATION */
+/* SESSION CARDS */
 
 .sessions-list {
   display: grid;
