@@ -302,8 +302,7 @@ function getPublicFamily(rawPublic) {
     "nephrologie",
     "pneumologie",
     "radiologie et imagerie medicale",
-    "rhumatologie",
-    "cardiologue"
+    "rhumatologie"
   ];
 
   if (medecinsKeywords.includes(normalized)) return "medecins";
@@ -425,7 +424,10 @@ function formatLabel(value) {
     "evaluation des pratiques professionnelles": "Évaluation des Pratiques Professionnelles",
     "audit clinique": "Audit clinique",
     "vignette clinique": "Vignette clinique",
-    "vignettes cliniques": "Vignettes cliniques"
+    "vignettes cliniques": "Vignettes cliniques",
+    "ouverte": "Ouverte",
+    "complete": "Complète",
+    "fermee": "Fermée"
   };
 
   return map[normalized] || raw;
@@ -602,6 +604,16 @@ function createSessionField(label, value) {
   `;
 }
 
+function formatPeriod(start, end) {
+  if (!hasValue(start) && !hasValue(end)) return "";
+
+  const startLabel = formatDateShort(start) || start;
+  const endLabel = formatDateShort(end) || end;
+
+  if (startLabel && endLabel) return `${startLabel} → ${endLabel}`;
+  return startLabel || endLabel;
+}
+
 function createSessionCard(session) {
   const inscrits = hasValue(session.nombreInscrits)
     ? formatNumber(session.nombreInscrits)
@@ -641,16 +653,6 @@ function createSessionCard(session) {
       </div>
     </article>
   `;
-}
-
-function formatPeriod(start, end) {
-  if (!hasValue(start) && !hasValue(end)) return "";
-
-  const startLabel = formatDateShort(start) || start;
-  const endLabel = formatDateShort(end) || end;
-
-  if (startLabel && endLabel) return `${startLabel} → ${endLabel}`;
-  return startLabel || endLabel;
 }
 
 function createSessionsBlock(sessions) {
@@ -972,12 +974,17 @@ function renderCurrentView() {
     ` · ${sessionCount} session${sessionCount > 1 ? "s" : ""}`;
 
   if (activeView === "catalogue") {
-    catalogueView.hidden = false;
-    calendarView.hidden = true;
+    catalogueView.classList.remove("is-hidden");
+    calendarView.classList.add("is-hidden");
+
     renderCatalogue(filteredFormations);
-  } else {
-    catalogueView.hidden = true;
-    calendarView.hidden = false;
+    return;
+  }
+
+  if (activeView === "calendrier") {
+    catalogueView.classList.add("is-hidden");
+    calendarView.classList.remove("is-hidden");
+
     renderCalendar(filteredFormations);
   }
 }
