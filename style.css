@@ -140,7 +140,7 @@ h1 {
   margin: 0;
   font-size: clamp(1.8rem, 3.4vw, 3rem);
   line-height: 1.05;
-  font-weight: 750;
+  font-weight: 700;
   letter-spacing: -0.03em;
   color: #1e1b16;
 }
@@ -180,7 +180,7 @@ h1 {
   margin: 0 0 6px;
   font-size: 16px;
   line-height: 1.2;
-  font-weight: 750;
+  font-weight: 700;
   color: #2b261d;
 }
 
@@ -413,7 +413,11 @@ h1 {
   background: linear-gradient(180deg, #b87945, #d4ae82);
 }
 
-.formation-card.format-non-presentiel::before {
+.formation-card.format-mixte-classe-virtuelle::before {
+  background: linear-gradient(180deg, #7f6a57, #b8aa99);
+}
+
+.formation-card.format-elearning::before {
   background: linear-gradient(180deg, #99874e, #c1b07a);
 }
 
@@ -472,7 +476,7 @@ h1 {
   border-color: #667a67;
 }
 
-.badge-format-non-presentiel {
+.badge-format-elearning {
   background: #99874e;
   color: #ffffff;
   border-color: #99874e;
@@ -483,6 +487,12 @@ h1 {
   background: #b87945;
   color: #ffffff;
   border-color: #b87945;
+}
+
+.badge-format-mixte-classe-virtuelle {
+  background: #7f6a57;
+  color: #ffffff;
+  border-color: #7f6a57;
 }
 
 .badge-session-count {
@@ -660,7 +670,7 @@ h1 {
 .session-main-date {
   color: var(--accent-dark);
   font-size: 13px;
-  font-weight: 750;
+  font-weight: 700;
 }
 
 .session-grid {
@@ -744,7 +754,7 @@ h1 {
   margin: 0 0 5px;
   color: #1e1b16;
   font-size: 14px;
-  font-weight: 750;
+  font-weight: 700;
   line-height: 1.4;
 }
 
