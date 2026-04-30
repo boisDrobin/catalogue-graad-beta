@@ -550,7 +550,7 @@ function getPublicBadgeClass(formation) {
 }
 
 /* ----------------------------- */
-/* FORMAT / BADGES */
+/* FORMAT / TYPE D'ACTION / BADGES */
 /* ----------------------------- */
 
 function formatLabel(value) {
@@ -579,6 +579,44 @@ function formatLabel(value) {
   };
 
   return map[normalized] || raw;
+}
+
+function getTypeActionShortLabel(typeAction) {
+  const normalized = cleanSearch(typeAction);
+
+  if (normalized.includes("evaluation des pratiques professionnelles")) return "EPP";
+  if (normalized.includes("formation continue")) return "FC";
+  if (normalized.includes("programme integre")) return "PI";
+
+  return "";
+}
+
+function getTypeActionFilterLabel(typeAction) {
+  const normalized = cleanSearch(typeAction);
+
+  if (normalized.includes("evaluation des pratiques professionnelles")) {
+    return "Évaluation des Pratiques Professionnelles (EPP)";
+  }
+
+  if (normalized.includes("formation continue")) {
+    return "Formation continue (FC)";
+  }
+
+  if (normalized.includes("programme integre")) {
+    return "Programme intégré (PI)";
+  }
+
+  return typeAction;
+}
+
+function getTypeActionBadgeClass(typeAction) {
+  const shortLabel = getTypeActionShortLabel(typeAction);
+
+  if (shortLabel === "EPP") return "badge-type-epp";
+  if (shortLabel === "FC") return "badge-type-fc";
+  if (shortLabel === "PI") return "badge-type-pi";
+
+  return "badge-type-default";
 }
 
 function getFormatClass(format) {
@@ -900,6 +938,8 @@ function renderCatalogue(data) {
     const formatClass = getFormatClass(formation.format);
     const publicLabel = getPublicBadgeLabel(formation);
     const publicBadgeClass = getPublicBadgeClass(formation);
+    const typeActionShortLabel = getTypeActionShortLabel(formation.typeAction);
+    const typeActionBadgeClass = getTypeActionBadgeClass(formation.typeAction);
     const formateurs = formation.formateurs.length
       ? formation.formateurs.join(", ")
       : "";
@@ -924,6 +964,12 @@ function renderCatalogue(data) {
               ${formation.format ? `
                 <span class="badge badge-format ${formatClass.replace("format-", "badge-format-")}">
                   ${escapeHtml(formation.format)}
+                </span>
+              ` : ""}
+
+              ${typeActionShortLabel ? `
+                <span class="badge badge-type-action ${typeActionBadgeClass}">
+                  ${escapeHtml(typeActionShortLabel)}
                 </span>
               ` : ""}
 
@@ -1082,6 +1128,8 @@ function renderCalendar(data) {
             const timeLabel = getSessionMainTimeLabel(session);
             const publicLabel = getPublicBadgeLabel(formation);
             const publicBadgeClass = getPublicBadgeClass(formation);
+            const typeActionShortLabel = getTypeActionShortLabel(formation.typeAction);
+            const typeActionBadgeClass = getTypeActionBadgeClass(formation.typeAction);
             const inscrits = hasValue(session.nombreInscrits)
               ? formatNumber(session.nombreInscrits)
               : "0";
@@ -1103,7 +1151,19 @@ function renderCalendar(data) {
                     <span class="badge badge-public ${publicBadgeClass}">
                       ${escapeHtml(publicLabel)}
                     </span>
-                    ${formation.format ? ` · ${escapeHtml(formation.format)}` : ""}
+
+                    ${formation.format ? `
+                      <span class="badge badge-format ${getFormatClass(formation.format).replace("format-", "badge-format-")}">
+                        ${escapeHtml(formation.format)}
+                      </span>
+                    ` : ""}
+
+                    ${typeActionShortLabel ? `
+                      <span class="badge badge-type-action ${typeActionBadgeClass}">
+                        ${escapeHtml(typeActionShortLabel)}
+                      </span>
+                    ` : ""}
+
                     ${session.nomSession ? ` · ${escapeHtml(session.nomSession)}` : ""}
                   </p>
                 </div>
@@ -1164,7 +1224,6 @@ function applyFilters() {
   const specialtyValue = cleanText(document.getElementById("filter-specialty").value);
   const formatValue = cleanText(document.getElementById("filter-format").value);
   const typeActionValue = cleanText(document.getElementById("filter-type-action").value);
-  const typologieValue = cleanText(document.getElementById("filter-typologie").value);
 
   filteredFormations = formations.filter(formation => {
     const families = getPublicFamiliesForFormation(formation);
@@ -1180,15 +1239,13 @@ function applyFilters() {
 
     const matchesFormat = !formatValue || formation.format === formatValue;
     const matchesTypeAction = !typeActionValue || formation.typeAction === typeActionValue;
-    const matchesTypologie = !typologieValue || formation.typologie === typologieValue;
 
     return (
       matchesSearch &&
       matchesFamily &&
       matchesSpecialty &&
       matchesFormat &&
-      matchesTypeAction &&
-      matchesTypologie
+      matchesTypeAction
     );
   });
 
@@ -1231,7 +1288,6 @@ function resetFilters() {
   document.getElementById("filter-specialty").value = "";
   document.getElementById("filter-format").value = "";
   document.getElementById("filter-type-action").value = "";
-  document.getElementById("filter-typologie").value = "";
 
   syncPublicButtons();
   updateSpecialtyFilterOptions();
@@ -1279,7 +1335,7 @@ function updateSpecialtyFilterOptions() {
   });
 }
 
-function populateSelect(selectId, values, defaultLabel) {
+function populateSelect(selectId, values, defaultLabel, labelFormatter = null) {
   const select = document.getElementById(selectId);
 
   select.innerHTML = `<option value="">${defaultLabel}</option>`;
@@ -1287,7 +1343,7 @@ function populateSelect(selectId, values, defaultLabel) {
   values.forEach(value => {
     const option = document.createElement("option");
     option.value = value;
-    option.textContent = value;
+    option.textContent = labelFormatter ? labelFormatter(value) : value;
     select.appendChild(option);
   });
 }
@@ -1299,18 +1355,13 @@ function initFilters() {
   const typeActions = uniqueValues(formations.map(item => item.typeAction))
     .sort((a, b) => a.localeCompare(b, "fr"));
 
-  const typologies = uniqueValues(formations.map(item => item.typologie))
-    .sort((a, b) => a.localeCompare(b, "fr"));
-
   populateSelect("filter-format", formats, "Tous");
-  populateSelect("filter-type-action", typeActions, "Tous");
-  populateSelect("filter-typologie", typologies, "Toutes");
+  populateSelect("filter-type-action", typeActions, "Tous", getTypeActionFilterLabel);
 
   document.getElementById("search").addEventListener("input", applyFilters);
   document.getElementById("filter-specialty").addEventListener("change", applyFilters);
   document.getElementById("filter-format").addEventListener("change", applyFilters);
   document.getElementById("filter-type-action").addEventListener("change", applyFilters);
-  document.getElementById("filter-typologie").addEventListener("change", applyFilters);
   document.getElementById("reset-filters").addEventListener("click", resetFilters);
 
   document.querySelectorAll(".public-pill").forEach(button => {
