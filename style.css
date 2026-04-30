@@ -103,13 +103,15 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  padding: 8px 12px;
+  padding: 5px 10px;
+  min-height: 26px;
   border-radius: var(--radius-pill);
   border: 1px solid #dccfae;
   background: #f7f1e4;
   color: #6f6032;
-  font-size: 11px;
+  font-size: 10.5px;
   font-weight: 700;
+  line-height: 1;
   text-decoration: none;
   white-space: nowrap;
   transition: transform 0.2s ease, background 0.2s ease, border-color 0.2s ease;
@@ -596,18 +598,30 @@ h1 {
   display: grid;
   grid-template-rows: 0fr;
   opacity: 0;
-  margin-top: 0;
-  transition: grid-template-rows 0.28s ease, opacity 0.28s ease;
+  height: 0;
+  overflow: hidden;
+  margin: 0;
+  transition:
+    grid-template-rows 0.28s ease,
+    opacity 0.28s ease,
+    height 0.28s ease;
 }
 
 .formation-card.is-open .formation-details {
   grid-template-rows: 1fr;
   opacity: 1;
+  height: auto;
 }
 
 .formation-details-inner {
+  min-height: 0;
   overflow: hidden;
   padding: 0 24px 24px;
+}
+
+.formation-card:not(.is-open) .formation-details-inner {
+  padding-top: 0;
+  padding-bottom: 0;
 }
 
 .info-grid {
@@ -951,6 +965,11 @@ h1 {
 
   .formation-details-inner {
     padding: 0 18px 20px;
+  }
+
+  .formation-card:not(.is-open) .formation-details-inner {
+    padding-top: 0;
+    padding-bottom: 0;
   }
 
   .formation-title {
