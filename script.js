@@ -30,6 +30,13 @@ function cleanSearch(value) {
     .trim();
 }
 
+function splitPublics(value) {
+  return cleanText(value)
+    .split(";")
+    .map(item => item.trim())
+    .filter(Boolean);
+}
+
 function escapeHtml(value) {
   return String(value ?? "")
     .replace(/&/g, "&amp;")
@@ -246,6 +253,7 @@ function getPublicFamily(rawPublic) {
 
   const medecinsKeywords = [
     "allergologie",
+    "allergologue",
     "generaliste",
     "generalistes",
     "medecine generale",
@@ -268,18 +276,26 @@ function getPublicFamily(rawPublic) {
     "dermatologie et venereologie",
     "dermatologue",
     "dermatologues",
+    "dermatologue et venerologue",
+    "dermatologues et venerologues",
     "anesthesie reanimation",
     "anesthesiste",
     "anesthesistes",
+    "anesthesiste reanimateur",
+    "anesthesiste reanimateurs",
     "immunologie",
     "immunologue",
     "immunologues",
     "medecine interne",
+    "medecin interne",
+    "medecins internes",
     "medecine interne et immunologie clinique",
     "endocrinologie",
     "endocrinologie diabetologie nutrition",
     "endocrinologue",
     "endocrinologues",
+    "endocrinologue, diabetologue et metaboliste",
+    "endocrinologues, diabetologues et metabolistes",
     "oncologie",
     "oncologue",
     "oncologues",
@@ -293,16 +309,36 @@ function getPublicFamily(rawPublic) {
     "geriatrie gerontologie",
     "geriatre",
     "geriatres",
+    "geriatre, gerontologue",
+    "geriatres, gerontologues",
     "maladies infectieuses et tropicales",
+    "maladie infectieuse et tropicale",
     "medecine d'urgence",
     "medecine d urgence",
+    "urgentiste",
+    "urgentistes",
     "medecine physique et de readaptation",
+    "medecin physique et de readaptation",
+    "medecins physiques et de readaptation",
     "medecine vasculaire",
+    "medecin vasculaire",
+    "medecins vasculaires",
     "neurologie",
+    "neurologue",
+    "neurologues",
     "nephrologie",
+    "nephrologue",
+    "nephrologues",
     "pneumologie",
+    "pneumologue",
+    "pneumologues",
+    "radiologie",
+    "radiologue",
+    "radiologues",
     "radiologie et imagerie medicale",
-    "rhumatologie"
+    "rhumatologie",
+    "rhumatologue",
+    "rhumatologues"
   ];
 
   if (medecinsKeywords.includes(normalized)) return "medecins";
@@ -349,51 +385,112 @@ function getMedicalSpecialtyLabel(rawPublic) {
 
   const map = {
     "allergologie": "Médecin - Allergologie",
+    "allergologue": "Médecin - Allergologie",
+
     "generaliste": "Médecin - Généraliste",
     "generalistes": "Médecin - Généraliste",
     "medecine generale": "Médecin - Médecine générale",
+
     "cardiologie": "Médecin - Cardiologie",
     "cardiologue": "Médecin - Cardiologie",
     "cardiologues": "Médecin - Cardiologie",
     "medecine cardiovasculaire": "Médecin - Médecine cardiovasculaire",
+
     "gynecologie": "Médecin - Gynécologie",
     "gynecologue": "Médecin - Gynécologie",
     "gynecologues": "Médecin - Gynécologie",
     "gynecologie medicale": "Médecin - Gynécologie",
     "gynecologie obstetrique": "Médecin - Gynécologie",
+
     "ophtalmologie": "Médecin - Ophtalmologie",
     "ophtalmologue": "Médecin - Ophtalmologie",
     "ophtalmologues": "Médecin - Ophtalmologie",
+
     "pediatrie": "Médecin - Pédiatrie",
     "pediatre": "Médecin - Pédiatrie",
     "pediatres": "Médecin - Pédiatrie",
+
     "dermatologie": "Médecin - Dermatologie",
     "dermatologie et venereologie": "Médecin - Dermatologie et vénéréologie",
     "dermatologue": "Médecin - Dermatologie",
     "dermatologues": "Médecin - Dermatologie",
+    "dermatologue et venerologue": "Médecin - Dermatologie et vénéréologie",
+    "dermatologues et venerologues": "Médecin - Dermatologie et vénéréologie",
+
     "anesthesie reanimation": "Médecin - Anesthésie-réanimation",
     "anesthesiste": "Médecin - Anesthésie-réanimation",
     "anesthesistes": "Médecin - Anesthésie-réanimation",
+    "anesthesiste reanimateur": "Médecin - Anesthésie-réanimation",
+    "anesthesiste reanimateurs": "Médecin - Anesthésie-réanimation",
+
     "immunologie": "Médecin - Immunologie",
     "medecine interne": "Médecin - Médecine interne",
+    "medecin interne": "Médecin - Médecine interne",
+    "medecins internes": "Médecin - Médecine interne",
     "medecine interne et immunologie clinique": "Médecin - Médecine interne et immunologie clinique",
+
     "endocrinologie": "Médecin - Endocrinologie",
     "endocrinologie diabetologie nutrition": "Médecin - Endocrinologie-diabétologie-nutrition",
+    "endocrinologue": "Médecin - Endocrinologie-diabétologie-nutrition",
+    "endocrinologues": "Médecin - Endocrinologie-diabétologie-nutrition",
+    "endocrinologue, diabetologue et metaboliste": "Médecin - Endocrinologie-diabétologie-nutrition",
+    "endocrinologues, diabetologues et metabolistes": "Médecin - Endocrinologie-diabétologie-nutrition",
+
     "oncologie": "Médecin - Oncologie",
+    "oncologue": "Médecin - Oncologie",
+    "oncologues": "Médecin - Oncologie",
+
     "psychiatrie": "Médecin - Psychiatrie",
+    "psychiatre": "Médecin - Psychiatrie",
+    "psychiatres": "Médecin - Psychiatrie",
+
     "hepato gastro enterologie": "Médecin - Hépato-gastro-entérologie",
+    "hepato gastro enterologue": "Médecin - Hépato-gastro-entérologie",
+    "hepato gastro enterologues": "Médecin - Hépato-gastro-entérologie",
+
     "geriatrie": "Médecin - Gériatrie",
     "geriatrie gerontologie": "Médecin - Gériatrie / Gérontologie",
+    "geriatre": "Médecin - Gériatrie / Gérontologie",
+    "geriatres": "Médecin - Gériatrie / Gérontologie",
+    "geriatre, gerontologue": "Médecin - Gériatrie / Gérontologie",
+    "geriatres, gerontologues": "Médecin - Gériatrie / Gérontologie",
+
     "maladies infectieuses et tropicales": "Médecin - Maladies infectieuses et tropicales",
+    "maladie infectieuse et tropicale": "Médecin - Maladies infectieuses et tropicales",
+
     "medecine d'urgence": "Médecin - Médecine d'urgence",
     "medecine d urgence": "Médecin - Médecine d'urgence",
+    "urgentiste": "Médecin - Médecine d'urgence",
+    "urgentistes": "Médecin - Médecine d'urgence",
+
     "medecine physique et de readaptation": "Médecin - Médecine physique et de réadaptation",
+    "medecin physique et de readaptation": "Médecin - Médecine physique et de réadaptation",
+    "medecins physiques et de readaptation": "Médecin - Médecine physique et de réadaptation",
+
     "medecine vasculaire": "Médecin - Médecine vasculaire",
+    "medecin vasculaire": "Médecin - Médecine vasculaire",
+    "medecins vasculaires": "Médecin - Médecine vasculaire",
+
     "neurologie": "Médecin - Neurologie",
+    "neurologue": "Médecin - Neurologie",
+    "neurologues": "Médecin - Neurologie",
+
     "nephrologie": "Médecin - Néphrologie",
+    "nephrologue": "Médecin - Néphrologie",
+    "nephrologues": "Médecin - Néphrologie",
+
     "pneumologie": "Médecin - Pneumologie",
+    "pneumologue": "Médecin - Pneumologie",
+    "pneumologues": "Médecin - Pneumologie",
+
+    "radiologie": "Médecin - Radiologie et imagerie médicale",
+    "radiologue": "Médecin - Radiologie et imagerie médicale",
+    "radiologues": "Médecin - Radiologie et imagerie médicale",
     "radiologie et imagerie medicale": "Médecin - Radiologie et imagerie médicale",
-    "rhumatologie": "Médecin - Rhumatologie"
+
+    "rhumatologie": "Médecin - Rhumatologie",
+    "rhumatologue": "Médecin - Rhumatologie",
+    "rhumatologues": "Médecin - Rhumatologie"
   };
 
   return map[normalized] || "";
@@ -402,6 +499,36 @@ function getMedicalSpecialtyLabel(rawPublic) {
 function getPublicLabel(publicSpecialite) {
   const medical = getMedicalSpecialtyLabel(publicSpecialite);
   return medical || publicSpecialite || "Public non renseigné";
+}
+
+function getPublicsForFormation(formation) {
+  return splitPublics(formation.publicSpecialite);
+}
+
+function getPublicBadgeLabel(formation) {
+  const publics = getPublicsForFormation(formation);
+
+  if (publics.length > 1) {
+    return "Public Mixte";
+  }
+
+  return getPublicLabel(publics[0] || formation.publicSpecialite);
+}
+
+function getPublicFamiliesForFormation(formation) {
+  return uniqueValues(
+    getPublicsForFormation(formation)
+      .map(getPublicFamily)
+      .filter(Boolean)
+  );
+}
+
+function getMedicalSpecialtiesForFormation(formation) {
+  return uniqueValues(
+    getPublicsForFormation(formation)
+      .map(getMedicalSpecialtyLabel)
+      .filter(Boolean)
+  );
 }
 
 /* ----------------------------- */
@@ -515,7 +642,6 @@ function groupRowsByReferenceAction(rows) {
             "Nbre d'heures 1er jour présentiel"
           ])),
           numeroDepot: referenceAction,
-          produitAssocie: getField(row, ["Produit associé"]),
           formateurs: [],
           priseEnCharge: formatMoney(getField(row, ["Prise en charge"])),
           indemnitesPs: formatMoney(getField(row, ["Indemnité PS", "Indemnités PS"])),
@@ -705,7 +831,7 @@ function renderCatalogue(data) {
 
   container.innerHTML = data.map((formation, index) => {
     const formatClass = getFormatClass(formation.format);
-    const publicLabel = getPublicLabel(formation.publicSpecialite);
+    const publicLabel = getPublicBadgeLabel(formation);
     const formateurs = formation.formateurs.length
       ? formation.formateurs.join(", ")
       : "";
@@ -860,7 +986,7 @@ function renderCalendar(data) {
         <div class="calendar-sessions">
           ${items.map(({ formation, session }) => {
             const timeLabel = getSessionMainTimeLabel(session);
-            const publicLabel = getPublicLabel(formation.publicSpecialite);
+            const publicLabel = getPublicBadgeLabel(formation);
             const inscrits = hasValue(session.nombreInscrits)
               ? formatNumber(session.nombreInscrits)
               : "0";
@@ -944,16 +1070,16 @@ function applyFilters() {
   const typologieValue = cleanText(document.getElementById("filter-typologie").value);
 
   filteredFormations = formations.filter(formation => {
-    const family = getPublicFamily(formation.publicSpecialite);
-    const specialty = getMedicalSpecialtyLabel(formation.publicSpecialite);
+    const families = getPublicFamiliesForFormation(formation);
+    const specialties = getMedicalSpecialtiesForFormation(formation);
     const haystack = getFormationSearchHaystack(formation);
 
     const matchesSearch = !searchValue || haystack.includes(searchValue);
-    const matchesFamily = !activePublicFamily || family === activePublicFamily;
+    const matchesFamily = !activePublicFamily || families.includes(activePublicFamily);
     const matchesSpecialty =
       activePublicFamily !== "medecins" ||
       !specialtyValue ||
-      specialty === specialtyValue;
+      specialties.includes(specialtyValue);
 
     const matchesFormat = !formatValue || formation.format === formatValue;
     const matchesTypeAction = !typeActionValue || formation.typeAction === typeActionValue;
@@ -1041,7 +1167,7 @@ function updateSpecialtyFilterOptions() {
 
   const specialties = uniqueValues(
     formations
-      .map(formation => getMedicalSpecialtyLabel(formation.publicSpecialite))
+      .flatMap(formation => getMedicalSpecialtiesForFormation(formation))
       .filter(Boolean)
   ).sort((a, b) => a.localeCompare(b, "fr"));
 
