@@ -945,7 +945,7 @@ function renderCatalogue(data) {
       : "";
 
     return `
-      <article class="formation-card ${formatClass} ${publicBadgeClass}">
+      <article class="formation-card ${formatClass} card-public-${publicBadgeClass.replace("badge-public-", "")}">
         <div
           class="formation-header"
           role="button"
