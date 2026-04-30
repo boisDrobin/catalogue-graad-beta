@@ -443,6 +443,7 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 9px;
+  align-items: center;
 }
 
 .badge {
@@ -458,11 +459,63 @@ h1 {
   white-space: nowrap;
 }
 
+/* BADGES PUBLICS */
+
 .badge-public {
   background: #f4efdf;
   color: #7f703f;
   border-color: #e6dcc0;
 }
+
+.badge-public-empty {
+  background: #f3f4f6;
+  color: #6b7280;
+  border-color: #d1d5db;
+}
+
+.badge-public-mixte {
+  background: #f5f3ff;
+  color: #6d28d9;
+  border-color: #ddd6fe;
+}
+
+.badge-public-medecins {
+  background: #eff6ff;
+  color: #1d4ed8;
+  border-color: #bfdbfe;
+}
+
+.badge-public-infirmiers {
+  background: #ecfeff;
+  color: #0f766e;
+  border-color: #a5f3fc;
+}
+
+.badge-public-pharmaciens {
+  background: #f0fdf4;
+  color: #15803d;
+  border-color: #bbf7d0;
+}
+
+.badge-public-sages-femmes {
+  background: #fdf2f8;
+  color: #be185d;
+  border-color: #fbcfe8;
+}
+
+.badge-public-kines {
+  background: #fff7ed;
+  color: #c2410c;
+  border-color: #fdba74;
+}
+
+.badge-public-dentistes {
+  background: #eef2ff;
+  color: #4338ca;
+  border-color: #c7d2fe;
+}
+
+/* BADGES FORMAT / SESSION */
 
 .badge-format {
   background: #6f6758;
@@ -585,6 +638,31 @@ h1 {
   font-size: 14px;
   line-height: 1.6;
   word-break: break-word;
+}
+
+.public-specialite-list {
+  display: inline;
+}
+
+.public-specialite-extra[hidden] {
+  display: none;
+}
+
+.inline-toggle {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 6px;
+}
+
+.inline-toggle:hover {
+  text-decoration: underline;
 }
 
 .section-block {
@@ -765,29 +843,9 @@ h1 {
   line-height: 1.5;
 }
 
-.public-specialite-list {
-  display: inline;
-}
-
-.public-specialite-extra[hidden] {
-  display: none;
-}
-
-.inline-toggle {
-  appearance: none;
-  border: 0;
-  background: transparent;
-  color: var(--accent);
-  font-family: inherit;
-  font-size: 13px;
-  font-weight: 700;
-  cursor: pointer;
-  padding: 0;
-  margin-left: 6px;
-}
-
-.inline-toggle:hover {
-  text-decoration: underline;
+.calendar-meta .badge {
+  margin-right: 4px;
+  vertical-align: middle;
 }
 
 /* EMPTY / ERROR */
