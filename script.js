@@ -415,9 +415,12 @@ function formatLabel(value) {
   const normalized = cleanSearch(raw);
 
   const map = {
-    "non presentiel": "Non présentiel",
+    "non presentiel": "E-learning",
+    "e learning": "E-learning",
+    "elearning": "E-learning",
     "classe virtuelle": "Classe virtuelle",
     "mixte presentiel": "Mixte présentiel",
+    "mixte classe virtuelle": "Mixte classe virtuelle",
     "presentiel": "Présentiel",
     "formation continue": "Formation continue",
     "programme integre": "Programme intégré",
@@ -436,10 +439,21 @@ function formatLabel(value) {
 function getFormatClass(format) {
   const normalized = cleanSearch(format);
 
+  if (normalized.includes("classe virtuelle") && normalized.includes("mixte")) {
+    return "format-mixte-classe-virtuelle";
+  }
+
   if (normalized.includes("classe virtuelle")) return "format-classe-virtuelle";
   if (normalized.includes("mixte presentiel")) return "format-mixte-presentiel";
   if (normalized.includes("presentiel")) return "format-presentiel";
-  if (normalized.includes("non presentiel")) return "format-non-presentiel";
+
+  if (
+    normalized.includes("non presentiel") ||
+    normalized.includes("e learning") ||
+    normalized.includes("elearning")
+  ) {
+    return "format-elearning";
+  }
 
   return "format-default";
 }
@@ -735,7 +749,6 @@ function renderCatalogue(data) {
           <div class="formation-details-inner">
             <div class="info-grid">
               ${createInfoBlock("Numéro de dépôt", formation.numeroDepot)}
-              ${createInfoBlock("Produit associé", formation.produitAssocie)}
               ${createInfoBlock("Public / Spécialité", formation.publicSpecialite)}
               ${createInfoBlock("Format", formation.format)}
               ${createInfoBlock("Type d’action", formation.typeAction)}
@@ -910,7 +923,6 @@ function getFormationSearchHaystack(formation) {
     formation.titre,
     formation.referenceAction,
     formation.numeroDepot,
-    formation.produitAssocie,
     formation.publicSpecialite,
     formation.format,
     formation.typeAction,
