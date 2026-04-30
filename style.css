@@ -765,6 +765,31 @@ h1 {
   line-height: 1.5;
 }
 
+.public-specialite-list {
+  display: inline;
+}
+
+.public-specialite-extra[hidden] {
+  display: none;
+}
+
+.inline-toggle {
+  appearance: none;
+  border: 0;
+  background: transparent;
+  color: var(--accent);
+  font-family: inherit;
+  font-size: 13px;
+  font-weight: 700;
+  cursor: pointer;
+  padding: 0;
+  margin-left: 6px;
+}
+
+.inline-toggle:hover {
+  text-decoration: underline;
+}
+
 /* EMPTY / ERROR */
 
 .empty-state {
