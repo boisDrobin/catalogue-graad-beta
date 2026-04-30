@@ -245,7 +245,7 @@ h1 {
 
 .filters-grid {
   display: grid;
-  grid-template-columns: minmax(190px, 1fr) minmax(150px, 0.85fr) minmax(170px, 0.95fr) minmax(150px, 0.85fr) minmax(230px, 1.2fr);
+  grid-template-columns: minmax(210px, 1fr) minmax(170px, 0.85fr) minmax(220px, 1fr) minmax(260px, 1.25fr);
   gap: 16px;
   align-items: start;
 }
@@ -517,7 +517,7 @@ h1 {
   border-color: #c7d2fe;
 }
 
-/* BADGES FORMAT / SESSION */
+/* BADGES FORMAT / TYPE / SESSION */
 
 .badge-format {
   background: #6f6758;
@@ -548,6 +548,34 @@ h1 {
   background: #7f6a57;
   color: #ffffff;
   border-color: #7f6a57;
+}
+
+.badge-type-action {
+  letter-spacing: 0.02em;
+}
+
+.badge-type-epp {
+  background: #fef2f2;
+  color: #b91c1c;
+  border-color: #fecaca;
+}
+
+.badge-type-fc {
+  background: #f0f9ff;
+  color: #0369a1;
+  border-color: #bae6fd;
+}
+
+.badge-type-pi {
+  background: #fdf4ff;
+  color: #a21caf;
+  border-color: #f5d0fe;
+}
+
+.badge-type-default {
+  background: #f4f4f5;
+  color: #52525b;
+  border-color: #d4d4d8;
 }
 
 .badge-session-count {
@@ -851,6 +879,10 @@ h1 {
 }
 
 .calendar-meta {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 6px;
   margin: 0;
   color: var(--muted);
   font-size: 12px;
@@ -858,7 +890,6 @@ h1 {
 }
 
 .calendar-meta .badge {
-  margin-right: 4px;
   vertical-align: middle;
 }
 
