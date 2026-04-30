@@ -705,6 +705,55 @@ function createInfoBlock(label, value) {
   `;
 }
 
+function createInfoBlockHtml(label, htmlValue) {
+  if (!hasValue(htmlValue)) return "";
+
+  return `
+    <div class="info-block">
+      <span class="info-label">${escapeHtml(label)}</span>
+      <div class="info-value">${htmlValue}</div>
+    </div>
+  `;
+}
+
+function createPublicSpecialiteBlock(formation, index) {
+  const publics = getPublicsForFormation(formation);
+
+  if (!publics.length) {
+    return createInfoBlock("Public / Spécialité", formation.publicSpecialite);
+  }
+
+  if (publics.length <= 2) {
+    return createInfoBlock("Public / Spécialité", publics.join(" - "));
+  }
+
+  const visiblePublics = publics.slice(0, 2);
+  const hiddenPublics = publics.slice(2);
+  const targetId = `public-specialite-extra-${index}`;
+
+  const htmlValue = `
+    <span class="public-specialite-list">
+      ${visiblePublics.map(escapeHtml).join(" - ")}
+      <span id="${targetId}" class="public-specialite-extra" hidden>
+        - ${hiddenPublics.map(escapeHtml).join(" - ")}
+      </span>
+    </span>
+
+    <button
+      type="button"
+      class="inline-toggle"
+      aria-expanded="false"
+      data-target="${targetId}"
+      data-more-label="Voir plus"
+      data-less-label="Voir moins"
+    >
+      Voir plus
+    </button>
+  `;
+
+  return createInfoBlockHtml("Public / Spécialité", htmlValue);
+}
+
 function createContextBlock(contexte) {
   if (!hasValue(contexte)) return "";
 
@@ -875,7 +924,7 @@ function renderCatalogue(data) {
           <div class="formation-details-inner">
             <div class="info-grid">
               ${createInfoBlock("Numéro de dépôt", formation.numeroDepot)}
-              ${createInfoBlock("Public / Spécialité", formation.publicSpecialite)}
+              ${createPublicSpecialiteBlock(formation, index)}
               ${createInfoBlock("Format", formation.format)}
               ${createInfoBlock("Type d’action", formation.typeAction)}
               ${createInfoBlock("Typologie", formation.typologie)}
@@ -895,6 +944,7 @@ function renderCatalogue(data) {
   }).join("");
 
   bindFormationToggles();
+  bindInlineToggles();
 }
 
 function bindFormationToggles() {
@@ -928,6 +978,29 @@ function toggleFormationCard(header) {
   if (toggleText) {
     toggleText.textContent = isOpen ? "Voir le détail" : "Masquer le détail";
   }
+}
+
+function bindInlineToggles() {
+  const buttons = document.querySelectorAll(".inline-toggle");
+
+  buttons.forEach(button => {
+    button.addEventListener("click", event => {
+      event.stopPropagation();
+
+      const targetId = button.getAttribute("data-target");
+      const target = document.getElementById(targetId);
+
+      if (!target) return;
+
+      const isHidden = target.hidden;
+      const moreLabel = button.getAttribute("data-more-label") || "Voir plus";
+      const lessLabel = button.getAttribute("data-less-label") || "Voir moins";
+
+      target.hidden = !isHidden;
+      button.textContent = isHidden ? lessLabel : moreLabel;
+      button.setAttribute("aria-expanded", isHidden ? "true" : "false");
+    });
+  });
 }
 
 /* ----------------------------- */
