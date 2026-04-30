@@ -792,7 +792,7 @@ h1 {
   display: flex;
   align-items: flex-start;
   justify-content: space-between;
-  gap: 12px;
+  gap: 14px;
   margin-bottom: 12px;
 }
 
@@ -804,10 +804,47 @@ h1 {
   color: #1e1b16;
 }
 
-.session-main-date {
-  color: var(--accent-dark);
-  font-size: 13px;
+.session-meta-row {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.session-meta-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: var(--radius-pill);
+  border: 1px solid #e9dcc6;
+  background: #f8f4ec;
+  color: #8a6c45;
+  font-size: 12px;
   font-weight: 700;
+  line-height: 1;
+  white-space: nowrap;
+}
+
+.session-meta-badge span {
+  color: #9b8a69;
+  font-size: 10px;
+  font-weight: 800;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.session-meta-badge strong {
+  color: #6f6032;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.session-date-badge {
+  background: #fffaf0;
+  color: #7f703f;
+  border-color: #eadfc8;
 }
 
 .session-grid {
@@ -969,6 +1006,15 @@ h1 {
     justify-self: start;
   }
 
+  .session-card-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .session-meta-row {
+    justify-content: flex-start;
+  }
+
   .calendar-session {
     grid-template-columns: 1fr;
     align-items: start;
@@ -1026,5 +1072,15 @@ h1 {
 
   .session-card-header {
     flex-direction: column;
+  }
+
+  .session-meta-row {
+    width: 100%;
+    justify-content: flex-start;
+  }
+
+  .session-meta-badge,
+  .session-meta-row .badge {
+    white-space: normal;
   }
 }
