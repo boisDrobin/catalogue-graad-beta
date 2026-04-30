@@ -531,6 +531,24 @@ function getMedicalSpecialtiesForFormation(formation) {
   );
 }
 
+function getPublicBadgeClass(formation) {
+  const publicLabel = getPublicBadgeLabel(formation);
+  const normalizedLabel = cleanSearch(publicLabel);
+  const families = getPublicFamiliesForFormation(formation);
+
+  if (normalizedLabel === "public mixte") return "badge-public-mixte";
+  if (normalizedLabel === "public non renseigne") return "badge-public-empty";
+
+  if (families.includes("medecins")) return "badge-public-medecins";
+  if (families.includes("infirmiers")) return "badge-public-infirmiers";
+  if (families.includes("pharmaciens")) return "badge-public-pharmaciens";
+  if (families.includes("sages-femmes")) return "badge-public-sages-femmes";
+  if (families.includes("kines")) return "badge-public-kines";
+  if (families.includes("dentistes")) return "badge-public-dentistes";
+
+  return "badge-public-empty";
+}
+
 /* ----------------------------- */
 /* FORMAT / BADGES */
 /* ----------------------------- */
@@ -881,6 +899,7 @@ function renderCatalogue(data) {
   container.innerHTML = data.map((formation, index) => {
     const formatClass = getFormatClass(formation.format);
     const publicLabel = getPublicBadgeLabel(formation);
+    const publicBadgeClass = getPublicBadgeClass(formation);
     const formateurs = formation.formateurs.length
       ? formation.formateurs.join(", ")
       : "";
@@ -898,7 +917,9 @@ function renderCatalogue(data) {
             <h2 class="formation-title">${escapeHtml(formation.titre || "Formation sans titre")}</h2>
 
             <div class="badges">
-              <span class="badge badge-public">${escapeHtml(publicLabel)}</span>
+              <span class="badge badge-public ${publicBadgeClass}">
+                ${escapeHtml(publicLabel)}
+              </span>
 
               ${formation.format ? `
                 <span class="badge badge-format ${formatClass.replace("format-", "badge-format-")}">
@@ -1060,6 +1081,7 @@ function renderCalendar(data) {
           ${items.map(({ formation, session }) => {
             const timeLabel = getSessionMainTimeLabel(session);
             const publicLabel = getPublicBadgeLabel(formation);
+            const publicBadgeClass = getPublicBadgeClass(formation);
             const inscrits = hasValue(session.nombreInscrits)
               ? formatNumber(session.nombreInscrits)
               : "0";
@@ -1078,7 +1100,9 @@ function renderCalendar(data) {
                     ${escapeHtml(formation.titre || "Formation sans titre")}
                   </p>
                   <p class="calendar-meta">
-                    ${escapeHtml(publicLabel)}
+                    <span class="badge badge-public ${publicBadgeClass}">
+                      ${escapeHtml(publicLabel)}
+                    </span>
                     ${formation.format ? ` · ${escapeHtml(formation.format)}` : ""}
                     ${session.nomSession ? ` · ${escapeHtml(session.nomSession)}` : ""}
                   </p>
