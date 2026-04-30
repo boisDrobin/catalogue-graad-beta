@@ -123,6 +123,16 @@ function shouldKeepSession(row) {
   return normalizeStatus(getField(row, ["Etat de la session"])) !== "fermée";
 }
 
+function getShortSessionName(sessionName) {
+  const raw = cleanText(sessionName);
+  if (!raw) return "";
+
+  const parts = raw.split("-");
+  if (parts.length <= 1) return raw;
+
+  return parts[parts.length - 1].trim();
+}
+
 /* ----------------------------- */
 /* DATES */
 /* ----------------------------- */
@@ -859,6 +869,17 @@ function formatPeriod(start, end) {
   return startLabel || endLabel;
 }
 
+function createSessionMetaBadge(label, value, className = "") {
+  if (!hasValue(value)) return "";
+
+  return `
+    <span class="session-meta-badge ${className}">
+      <span>${escapeHtml(label)}</span>
+      <strong>${escapeHtml(value)}</strong>
+    </span>
+  `;
+}
+
 function createSessionCard(session) {
   const inscrits = hasValue(session.nombreInscrits)
     ? formatNumber(session.nombreInscrits)
@@ -868,33 +889,41 @@ function createSessionCard(session) {
     ? formatNumber(session.effectifMaximum)
     : "-";
 
-  const mainDateLabel = getSessionMainDateLabel(session);
+  const sessionName = getShortSessionName(session.nomSession || "Session sans nom");
+  const inscriptionLabel = `${inscrits} / ${effectif}`;
+  const dateDebutLabel = formatDateShort(session.dateDebut) || session.dateDebut;
+  const dateFinLabel = formatDateShort(session.dateFin) || session.dateFin;
 
   return `
     <article class="session-card">
       <div class="session-card-header">
         <div>
-          <h4 class="session-name">${escapeHtml(session.nomSession || "Session sans nom")}</h4>
-          <div class="session-main-date">${escapeHtml(mainDateLabel)}</div>
+          <h4 class="session-name">${escapeHtml(sessionName || "Session sans nom")}</h4>
         </div>
 
-        ${session.etat ? `
-          <span class="badge ${getStatusBadgeClass(session.etat)}">
-            ${escapeHtml(session.etat)}
+        <div class="session-meta-row">
+          ${session.etat ? `
+            <span class="badge ${getStatusBadgeClass(session.etat)}">
+              ${escapeHtml(session.etat)}
+            </span>
+          ` : ""}
+
+          <span class="badge badge-session-count">
+            ${escapeHtml(inscriptionLabel)}
           </span>
-        ` : ""}
+
+          ${createSessionMetaBadge("Début", dateDebutLabel, "session-date-badge")}
+          ${createSessionMetaBadge("Fin", dateFinLabel, "session-date-badge")}
+        </div>
       </div>
 
       <div class="session-grid">
-        ${createSessionField("Inscrits", `${inscrits} / ${effectif}`)}
         ${createSessionField("Intervenant", session.intervenant1)}
-        ${createSessionField("Date de début", formatDateShort(session.dateDebut) || session.dateDebut)}
-        ${createSessionField("Date de fin", formatDateShort(session.dateFin) || session.dateFin)}
         ${createSessionField("Classe virtuelle", formatDateTimeFr(session.dateClasseVirtuelle))}
         ${createSessionField("1er jour présentiel", formatDateTimeFr(session.datePremierJourPresentiel))}
-        ${createSessionField("U1", formatPeriod(session.debutU1, session.finU1))}
-        ${createSessionField("U2", formatPeriod(session.debutU2, session.finU2))}
-        ${createSessionField("U3", formatPeriod(session.debutU3, session.finU3))}
+        ${createSessionField("Unité 1", formatPeriod(session.debutU1, session.finU1))}
+        ${createSessionField("Unité 2", formatPeriod(session.debutU2, session.finU2))}
+        ${createSessionField("Unité 3", formatPeriod(session.debutU3, session.finU3))}
       </div>
     </article>
   `;
@@ -1164,7 +1193,7 @@ function renderCalendar(data) {
                       </span>
                     ` : ""}
 
-                    ${session.nomSession ? ` · ${escapeHtml(session.nomSession)}` : ""}
+                    ${session.nomSession ? ` · ${escapeHtml(getShortSessionName(session.nomSession))}` : ""}
                   </p>
                 </div>
 
