@@ -406,37 +406,37 @@ h1 {
   background: linear-gradient(180deg, #99874e, #c1b07a);
 }
 
-/* Liseré gauche basé sur le public */
+/* Liseré gauche basé uniquement sur le public */
 
-.formation-card.badge-public-empty::before {
+.formation-card.card-public-empty::before {
   background: linear-gradient(180deg, #9ca3af, #d1d5db);
 }
 
-.formation-card.badge-public-mixte::before {
+.formation-card.card-public-mixte::before {
   background: linear-gradient(180deg, #6d28d9, #c4b5fd);
 }
 
-.formation-card.badge-public-medecins::before {
+.formation-card.card-public-medecins::before {
   background: linear-gradient(180deg, #1d4ed8, #93c5fd);
 }
 
-.formation-card.badge-public-infirmiers::before {
+.formation-card.card-public-infirmiers::before {
   background: linear-gradient(180deg, #0f766e, #67e8f9);
 }
 
-.formation-card.badge-public-pharmaciens::before {
+.formation-card.card-public-pharmaciens::before {
   background: linear-gradient(180deg, #15803d, #86efac);
 }
 
-.formation-card.badge-public-sages-femmes::before {
+.formation-card.card-public-sages-femmes::before {
   background: linear-gradient(180deg, #be185d, #f9a8d4);
 }
 
-.formation-card.badge-public-kines::before {
+.formation-card.card-public-kines::before {
   background: linear-gradient(180deg, #c2410c, #fdba74);
 }
 
-.formation-card.badge-public-dentistes::before {
+.formation-card.card-public-dentistes::before {
   background: linear-gradient(180deg, #4338ca, #a5b4fc);
 }
 
