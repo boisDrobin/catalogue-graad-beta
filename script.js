@@ -56,6 +56,15 @@ function getField(row, keys) {
   return "";
 }
 
+function getFirstNonEmptyValue(rows, keys) {
+  for (const row of rows) {
+    const value = getField(row, keys);
+    if (hasValue(value)) return value;
+  }
+
+  return "";
+}
+
 function hasValue(value) {
   return cleanText(value) !== "";
 }
@@ -113,14 +122,16 @@ function normalizeStatus(value) {
   const status = cleanSearch(value);
 
   if (status === "fermee" || status === "ferme") return "fermée";
-  if (status === "complete" || status === "complet") return "complète";
+  if (status === "complete" || status === "complet" || status === "completee") return "complète";
   if (status === "ouverte" || status === "ouvert") return "ouverte";
 
   return status;
 }
 
 function shouldKeepSession(row) {
-  return normalizeStatus(getField(row, ["Etat de la session"])) !== "fermée";
+  const status = normalizeStatus(getField(row, ["Etat de la session"]));
+
+  return status === "ouverte" || status === "complète";
 }
 
 function getShortSessionName(sessionName) {
@@ -212,13 +223,6 @@ function getSessionMainDate(session) {
 
 function getSessionMainDateObject(session) {
   return parseDate(getSessionMainDate(session));
-}
-
-function getSessionMainDateLabel(session) {
-  const main = getSessionMainDate(session);
-  if (!main) return "Date à préciser";
-
-  return formatDateTimeFr(main);
 }
 
 function getSessionMainTimeLabel(session) {
@@ -577,12 +581,21 @@ function formatLabel(value) {
     "mixte presentiel": "Mixte présentiel",
     "mixte classe virtuelle": "Mixte classe virtuelle",
     "presentiel": "Présentiel",
+
     "formation continue": "Formation continue",
+    "fc": "Formation continue",
+
     "programme integre": "Programme intégré",
+    "pi": "Programme intégré",
+
     "evaluation des pratiques professionnelles": "Évaluation des Pratiques Professionnelles",
+    "epp": "Évaluation des Pratiques Professionnelles",
+
     "audit clinique": "Audit clinique",
     "vignette clinique": "Vignette clinique",
     "vignettes cliniques": "Vignettes cliniques",
+    "tcs": "TCS",
+
     "ouverte": "Ouverte",
     "complete": "Complète",
     "fermee": "Fermée"
@@ -684,59 +697,33 @@ function createSessionFromRow(row) {
   };
 }
 
-function groupRowsByReferenceAction(rows) {
-  const map = new Map();
+function groupRawRowsByReferenceAction(rows) {
+  const groupedRows = new Map();
 
-  rows
-    .filter(shouldKeepSession)
-    .forEach(row => {
-      const referenceAction = getField(row, ["Référence d'action"]);
+  rows.forEach(row => {
+    const referenceAction = getField(row, ["Référence d'action"]);
+    if (!referenceAction) return;
 
-      if (!referenceAction) return;
+    if (!groupedRows.has(referenceAction)) {
+      groupedRows.set(referenceAction, []);
+    }
 
-      if (!map.has(referenceAction)) {
-        map.set(referenceAction, {
-          referenceAction,
-          titre: getField(row, ["Thématique session", "Titre", "Intitulé"]),
-          publicSpecialite: getField(row, ["Cible", "Public / Spécialité", "Public concerné"]),
-          format: formatLabel(getField(row, ["Format DPC", "Format"])),
-          typeAction: formatLabel(getField(row, ["Type d'action"])),
-          typologie: formatLabel(getField(row, ["Typologie"])),
-          dureeTotale: formatHours(getField(row, [
-            "Durée totale",
-            "Duree totale",
-            "Nbre d'heures 1er jour présentiel"
-          ])),
-          numeroDepot: referenceAction,
-          formateurs: [],
-          priseEnCharge: formatMoney(getField(row, ["Prise en charge"])),
-          indemnitesPs: formatMoney(getField(row, ["Indemnité PS", "Indemnités PS"])),
-          contexte: getField(row, ["Contexte"]),
-          ficheMemoPdf: getField(row, [
-            "Fiche mémo PDF",
-            "Fiche memo PDF",
-            "Fiche mémo pdf",
-            "Fiche memo pdf"
-          ]),
-          sessions: []
-        });
-      }
+    groupedRows.get(referenceAction).push(row);
+  });
 
-      const formation = map.get(referenceAction);
-      const session = createSessionFromRow(row);
+  return groupedRows;
+}
 
-      formation.sessions.push(session);
+function createFormationFromGroup(referenceAction, rows) {
+  const visibleSessionRows = rows.filter(shouldKeepSession);
 
-      if (session.intervenant1) {
-        formation.formateurs.push(session.intervenant1);
-        formation.formateurs = uniqueValues(formation.formateurs);
-      }
-    });
+  if (!visibleSessionRows.length) {
+    return null;
+  }
 
-  const grouped = Array.from(map.values());
-
-  grouped.forEach(formation => {
-    formation.sessions.sort((a, b) => {
+  const sessions = visibleSessionRows
+    .map(createSessionFromRow)
+    .sort((a, b) => {
       const dateA = getSessionMainDateObject(a);
       const dateB = getSessionMainDateObject(b);
 
@@ -746,7 +733,48 @@ function groupRowsByReferenceAction(rows) {
 
       return dateA - dateB;
     });
-  });
+
+  const formateurs = uniqueValues(
+    rows
+      .map(row => getField(row, ["Intervenant 1"]))
+      .filter(Boolean)
+  );
+
+  return {
+    referenceAction,
+    titre: getFirstNonEmptyValue(rows, ["Thématique session", "Titre", "Intitulé"]),
+    publicSpecialite: getFirstNonEmptyValue(rows, ["Cible", "Public / Spécialité", "Public concerné"]),
+    format: formatLabel(getFirstNonEmptyValue(rows, ["Format DPC", "Format"])),
+    typeAction: formatLabel(getFirstNonEmptyValue(rows, ["Type d'action"])),
+    typologie: formatLabel(getFirstNonEmptyValue(rows, ["Typologie"])),
+    dureeTotale: formatHours(getFirstNonEmptyValue(rows, [
+      "Durée totale",
+      "Duree totale",
+      "Nbre d'heures 1er jour présentiel"
+    ])),
+    numeroDepot: referenceAction,
+    formateurs,
+    priseEnCharge: formatMoney(getFirstNonEmptyValue(rows, ["Prise en charge"])),
+    indemnitesPs: formatMoney(getFirstNonEmptyValue(rows, ["Indemnité PS", "Indemnités PS"])),
+    contexte: getFirstNonEmptyValue(rows, ["Contexte"]),
+    ficheMemoPdf: getFirstNonEmptyValue(rows, [
+      "Fiche memo",
+      "Fiche mémo",
+      "Fiche mémo PDF",
+      "Fiche memo PDF",
+      "Fiche mémo pdf",
+      "Fiche memo pdf"
+    ]),
+    sessions
+  };
+}
+
+function groupRowsByReferenceAction(rows) {
+  const groupedRows = groupRawRowsByReferenceAction(rows);
+
+  const grouped = Array.from(groupedRows.entries())
+    .map(([referenceAction, groupRows]) => createFormationFromGroup(referenceAction, groupRows))
+    .filter(Boolean);
 
   return grouped.sort((a, b) => {
     const titleA = stripBracketPrefix(a.titre);
@@ -1223,6 +1251,7 @@ function renderCalendar(data) {
 function getFormationSearchHaystack(formation) {
   const sessionText = formation.sessions.map(session => [
     session.nomSession,
+    getShortSessionName(session.nomSession),
     session.etat,
     session.intervenant1,
     session.dateDebut,
