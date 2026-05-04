@@ -669,7 +669,7 @@ h1 {
   padding-bottom: 0;
 }
 
-/* NOUVELLE MISE EN PAGE DÉTAIL CARTE */
+/* MISE EN PAGE DÉTAIL CARTE */
 
 .formation-layout {
   display: grid;
@@ -691,17 +691,30 @@ h1 {
 }
 
 .formation-sidebar .info-block {
-  padding: 13px 13px;
+  padding: 12px;
+  gap: 9px;
+}
+
+.formation-sidebar .info-icon {
+  width: 30px;
+  height: 30px;
+  min-width: 30px;
+  border-radius: 10px;
+}
+
+.formation-sidebar .info-icon svg {
+  width: 15px;
+  height: 15px;
 }
 
 .formation-sidebar .info-label {
-  font-size: 10px;
+  font-size: 9.5px;
   line-height: 1.25;
 }
 
 .formation-sidebar .info-value {
-  font-size: 13px;
-  line-height: 1.5;
+  font-size: 12.5px;
+  line-height: 1.45;
 }
 
 /* INFOS */
@@ -713,10 +726,37 @@ h1 {
 }
 
 .info-block {
+  display: flex;
+  align-items: flex-start;
+  gap: 11px;
   padding: 15px 16px;
   border-radius: 18px;
   border: 1px solid #eee7dc;
   background: linear-gradient(180deg, #fffefd 0%, #fbfaf7 100%);
+}
+
+.info-icon {
+  width: 34px;
+  height: 34px;
+  min-width: 34px;
+  border-radius: 12px;
+  background: #f4efdf;
+  border: 1px solid #e6dcc0;
+  color: var(--accent-dark);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.info-icon svg {
+  width: 17px;
+  height: 17px;
+  stroke: currentColor;
+}
+
+.info-content {
+  flex: 1;
+  min-width: 0;
 }
 
 .info-label {
@@ -1125,6 +1165,29 @@ h1 {
 
   .formation-sidebar .info-grid {
     grid-template-columns: 1fr;
+  }
+
+  .formation-sidebar .info-block {
+    padding: 13px;
+  }
+
+  .formation-sidebar .info-icon {
+    width: 32px;
+    height: 32px;
+    min-width: 32px;
+  }
+
+  .formation-sidebar .info-icon svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .formation-sidebar .info-label {
+    font-size: 10px;
+  }
+
+  .formation-sidebar .info-value {
+    font-size: 13px;
   }
 
   .session-card-header {
