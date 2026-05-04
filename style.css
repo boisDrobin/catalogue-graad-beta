@@ -669,6 +669,43 @@ h1 {
   padding-bottom: 0;
 }
 
+/* NOUVELLE MISE EN PAGE DÉTAIL CARTE */
+
+.formation-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 2fr) minmax(300px, 1fr);
+  gap: 18px;
+  align-items: start;
+}
+
+.formation-main {
+  min-width: 0;
+}
+
+.formation-sidebar {
+  min-width: 0;
+}
+
+.formation-sidebar .info-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.formation-sidebar .info-block {
+  padding: 13px 13px;
+}
+
+.formation-sidebar .info-label {
+  font-size: 10px;
+  line-height: 1.25;
+}
+
+.formation-sidebar .info-value {
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* INFOS */
+
 .info-grid {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
@@ -730,6 +767,10 @@ h1 {
   border: 1px solid #eee7dc;
   background: linear-gradient(180deg, #fffefd 0%, #fbfaf7 100%);
   overflow: hidden;
+}
+
+.formation-main .section-block:first-child {
+  margin-top: 0;
 }
 
 .section-inner {
@@ -969,6 +1010,18 @@ h1 {
   .filter-search {
     grid-column: 1 / -1;
   }
+
+  .formation-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .formation-sidebar {
+    order: -1;
+  }
+
+  .formation-sidebar .info-grid {
+    grid-template-columns: repeat(auto-fit, minmax(190px, 1fr));
+  }
 }
 
 @media (max-width: 980px) {
@@ -1068,6 +1121,10 @@ h1 {
 
   .formation-title {
     font-size: 19px;
+  }
+
+  .formation-sidebar .info-grid {
+    grid-template-columns: 1fr;
   }
 
   .session-card-header {
