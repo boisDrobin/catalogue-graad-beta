@@ -65,6 +65,10 @@ function getFirstNonEmptyValue(rows, keys) {
   return "";
 }
 
+function getBestGroupValue(visibleRows, allRows, keys) {
+  return getFirstNonEmptyValue(visibleRows, keys) || getFirstNonEmptyValue(allRows, keys);
+}
+
 function hasValue(value) {
   return cleanText(value) !== "";
 }
@@ -130,7 +134,6 @@ function normalizeStatus(value) {
 
 function shouldKeepSession(row) {
   const status = normalizeStatus(getField(row, ["Etat de la session"]));
-
   return status === "ouverte" || status === "complète";
 }
 
@@ -735,36 +738,72 @@ function createFormationFromGroup(referenceAction, rows) {
     });
 
   const formateurs = uniqueValues(
-    rows
+    visibleSessionRows
       .map(row => getField(row, ["Intervenant 1"]))
       .filter(Boolean)
   );
 
   return {
     referenceAction,
-    titre: getFirstNonEmptyValue(rows, ["Thématique session", "Titre", "Intitulé"]),
-    publicSpecialite: getFirstNonEmptyValue(rows, ["Cible", "Public / Spécialité", "Public concerné"]),
-    format: formatLabel(getFirstNonEmptyValue(rows, ["Format DPC", "Format"])),
-    typeAction: formatLabel(getFirstNonEmptyValue(rows, ["Type d'action"])),
-    typologie: formatLabel(getFirstNonEmptyValue(rows, ["Typologie"])),
-    dureeTotale: formatHours(getFirstNonEmptyValue(rows, [
+
+    titre: getBestGroupValue(visibleSessionRows, rows, [
+      "Thématique session",
+      "Titre",
+      "Intitulé"
+    ]),
+
+    publicSpecialite: getBestGroupValue(visibleSessionRows, rows, [
+      "Cible",
+      "Public / Spécialité",
+      "Public concerné"
+    ]),
+
+    format: formatLabel(getBestGroupValue(visibleSessionRows, rows, [
+      "Format DPC",
+      "Format"
+    ])),
+
+    typeAction: formatLabel(getBestGroupValue(visibleSessionRows, rows, [
+      "Type d'action"
+    ])),
+
+    typologie: formatLabel(getBestGroupValue(visibleSessionRows, rows, [
+      "Typologie"
+    ])),
+
+    dureeTotale: formatHours(getBestGroupValue(visibleSessionRows, rows, [
       "Durée totale",
       "Duree totale",
       "Nbre d'heures 1er jour présentiel"
     ])),
+
     numeroDepot: referenceAction,
+
     formateurs,
-    priseEnCharge: formatMoney(getFirstNonEmptyValue(rows, ["Prise en charge"])),
-    indemnitesPs: formatMoney(getFirstNonEmptyValue(rows, ["Indemnité PS", "Indemnités PS"])),
-    contexte: getFirstNonEmptyValue(rows, ["Contexte"]),
-    ficheMemoPdf: getFirstNonEmptyValue(rows, [
+
+    priseEnCharge: formatMoney(getBestGroupValue(visibleSessionRows, rows, [
+      "Prise en charge"
+    ])),
+
+    indemnitesPs: formatMoney(getBestGroupValue(visibleSessionRows, rows, [
+      "Indemnité PS",
+      "Indemnités PS"
+    ])),
+
+    contexte: getBestGroupValue(visibleSessionRows, rows, [
+      "Contexte"
+    ]),
+
+    ficheMemoPdf: getBestGroupValue(visibleSessionRows, rows, [
       "Fiche memo",
       "Fiche mémo",
+      "Fiche Mémo",
       "Fiche mémo PDF",
       "Fiche memo PDF",
       "Fiche mémo pdf",
       "Fiche memo pdf"
     ]),
+
     sessions
   };
 }
