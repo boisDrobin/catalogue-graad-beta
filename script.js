@@ -1465,12 +1465,20 @@ function renderCurrentView() {
   const count = document.getElementById("results-count");
 
   const sessionCount = filteredFormations.reduce((sum, formation) => {
-    return sum + formation.sessions.length;
-  }, 0);
+  return sum + formation.sessions.length;
+}, 0);
 
-  count.textContent =
-    `${filteredFormations.length} formation${filteredFormations.length > 1 ? "s" : ""} affichée${filteredFormations.length > 1 ? "s" : ""}` +
-    ` · ${sessionCount} session${sessionCount > 1 ? "s" : ""}`;
+const inscritCount = filteredFormations.reduce((sum, formation) => {
+  return sum + formation.sessions.reduce((sessionSum, session) => {
+    const value = Number(cleanText(session.nombreInscrits).replace(",", "."));
+    return sessionSum + (Number.isNaN(value) ? 0 : value);
+  }, 0);
+}, 0);
+
+count.textContent =
+  `${filteredFormations.length} formation${filteredFormations.length > 1 ? "s" : ""} affichée${filteredFormations.length > 1 ? "s" : ""}` +
+  ` · ${sessionCount} session${sessionCount > 1 ? "s" : ""}` +
+  ` · ${formatNumber(inscritCount)} inscrit${inscritCount > 1 ? "s" : ""}`;
 
   if (activeView === "catalogue") {
     catalogueView.classList.remove("is-hidden");
