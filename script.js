@@ -4,7 +4,7 @@ let activePublicFamily = "medecins";
 let activeView = "catalogue";
 
 const CSV_PATH = "./data/data.csv";
-const CSV_IMPORT_DATE = "2026-04-30";
+const CSV_IMPORT_DATE = "2026-05-04";
 
 /* ----------------------------- */
 /* UTILITAIRES */
@@ -182,7 +182,7 @@ function getInfoIcon(label) {
       </svg>
     `,
 
-    "Type d’action": `
+    "Typologie": `
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 6h16"></path>
         <path d="M4 12h10"></path>
@@ -190,10 +190,10 @@ function getInfoIcon(label) {
       </svg>
     `,
 
-    "Typologie": `
+    "Type d’EPP": `
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
-        <path d="M12 3 2 8l10 5 10-5-10-5Z"></path>
-        <path d="M6 10.5V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.5"></path>
+        <path d="M12 20h9"></path>
+        <path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4Z"></path>
       </svg>
     `,
 
@@ -1201,8 +1201,8 @@ function renderCatalogue(data) {
                   ${createInfoBlock("Numéro de dépôt", formation.numeroDepot)}
                   ${createPublicSpecialiteBlock(formation, index)}
                   ${createInfoBlock("Format", formation.format)}
-                  ${createInfoBlock("Type d’action", formation.typeAction)}
-                  ${createInfoBlock("Typologie", formation.typologie)}
+                  ${createInfoBlock("Typologie", formation.typeAction)}
+                  ${createInfoBlock("Type d’EPP", formation.typologie)}
                   ${createInfoBlock("Durée totale", formation.dureeTotale)}
                   ${createInfoBlock("Formateur(s)", formateurs)}
                   ${createInfoBlock("Prise en charge", formation.priseEnCharge)}
