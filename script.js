@@ -1086,21 +1086,27 @@ function renderCatalogue(data) {
 
         <div class="formation-details">
           <div class="formation-details-inner">
-            <div class="info-grid">
-              ${createInfoBlock("Numéro de dépôt", formation.numeroDepot)}
-              ${createPublicSpecialiteBlock(formation, index)}
-              ${createInfoBlock("Format", formation.format)}
-              ${createInfoBlock("Type d’action", formation.typeAction)}
-              ${createInfoBlock("Typologie", formation.typologie)}
-              ${createInfoBlock("Durée totale", formation.dureeTotale)}
-              ${createInfoBlock("Formateur(s)", formateurs)}
-              ${createInfoBlock("Prise en charge", formation.priseEnCharge)}
-              ${createInfoBlock("Indemnités PS", formation.indemnitesPs)}
-            </div>
+            <div class="formation-layout">
+              <div class="formation-main">
+                ${createContextBlock(formation.contexte)}
+                ${createSessionsBlock(formation.sessions)}
+                ${createMemoButton(formation.ficheMemoPdf)}
+              </div>
 
-            ${createContextBlock(formation.contexte)}
-            ${createSessionsBlock(formation.sessions)}
-            ${createMemoButton(formation.ficheMemoPdf)}
+              <aside class="formation-sidebar">
+                <div class="info-grid">
+                  ${createInfoBlock("Numéro de dépôt", formation.numeroDepot)}
+                  ${createPublicSpecialiteBlock(formation, index)}
+                  ${createInfoBlock("Format", formation.format)}
+                  ${createInfoBlock("Type d’action", formation.typeAction)}
+                  ${createInfoBlock("Typologie", formation.typologie)}
+                  ${createInfoBlock("Durée totale", formation.dureeTotale)}
+                  ${createInfoBlock("Formateur(s)", formateurs)}
+                  ${createInfoBlock("Prise en charge", formation.priseEnCharge)}
+                  ${createInfoBlock("Indemnités PS", formation.indemnitesPs)}
+                </div>
+              </aside>
+            </div>
           </div>
         </div>
       </article>
