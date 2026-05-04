@@ -4,6 +4,7 @@ let activePublicFamily = "medecins";
 let activeView = "catalogue";
 
 const CSV_PATH = "./data/data.csv";
+const CSV_IMPORT_DATE = "2026-05-04";
 
 /* ----------------------------- */
 /* UTILITAIRES */
@@ -1487,18 +1488,13 @@ function initFilters() {
 /* CHARGEMENT */
 /* ----------------------------- */
 
-function setSubtitleFromResponse(response) {
+function setSubtitleFromCsvImportDate() {
   const subtitle = document.getElementById("subtitle-text");
-  const lastModified = response.headers.get("last-modified");
+  if (!subtitle) return;
 
-  if (!lastModified) {
-    subtitle.textContent = "Données issues d’un export Zoho CRM";
-    return;
-  }
+  const date = parseDate(CSV_IMPORT_DATE);
 
-  const date = new Date(lastModified);
-
-  if (Number.isNaN(date.getTime())) {
+  if (!date) {
     subtitle.textContent = "Données issues d’un export Zoho CRM";
     return;
   }
@@ -1514,7 +1510,7 @@ async function loadData() {
       throw new Error(`Erreur HTTP ${response.status}`);
     }
 
-    setSubtitleFromResponse(response);
+    setSubtitleFromCsvImportDate();
 
     const csvText = await response.text();
 
