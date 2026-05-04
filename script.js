@@ -4,7 +4,7 @@ let activePublicFamily = "medecins";
 let activeView = "catalogue";
 
 const CSV_PATH = "./data/data.csv";
-const CSV_IMPORT_DATE = "2026-05-04";
+const CSV_IMPORT_DATE = "2026-04-30";
 
 /* ----------------------------- */
 /* UTILITAIRES */
