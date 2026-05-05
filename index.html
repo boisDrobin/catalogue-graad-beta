@@ -3,7 +3,6 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
   <title>Catalogue formations</title>
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -21,7 +20,7 @@
 <body>
   <header class="site-header">
     <div class="container">
-      <div class="hero">
+      <section class="hero">
         <div class="hero-logo-wrap">
           <img
             class="hero-logo"
@@ -32,8 +31,8 @@
 
         <div class="hero-actions">
           <a
-            class="hero-button"
             href="./faq.html"
+            class="hero-button"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -41,8 +40,8 @@
           </a>
 
           <a
-            class="hero-button"
             href="https://boisdrobin.github.io/Calculateur-indem-ANDPC/"
+            class="hero-button"
             target="_blank"
             rel="noopener noreferrer"
           >
@@ -57,7 +56,7 @@
             Données issues d’un export Zoho CRM
           </p>
         </div>
-      </div>
+      </section>
     </div>
   </header>
 
@@ -66,7 +65,7 @@
       <div class="public-block">
         <div class="block-head">
           <h2>Choisir un public</h2>
-          <p>Sélectionnez un public pour filtrer rapidement les formations disponibles.</p>
+          <p>Sélectionnez un public pour filtrer rapidement le catalogue.</p>
         </div>
 
         <div class="public-switcher" role="group" aria-label="Choix du public">
@@ -80,9 +79,10 @@
         </div>
       </div>
 
-      <div class="advanced-filters">
+      <section class="advanced-filters">
         <div class="block-head">
           <h2>Affiner les résultats</h2>
+          <p>Filtrez par spécialité, format, typologie, financement ou mot-clé.</p>
         </div>
 
         <div class="filters-grid">
@@ -101,8 +101,15 @@
           </div>
 
           <div class="filter-group">
-            <label for="filter-type-action">Type d’action</label>
+            <label for="filter-type-action">Typologie</label>
             <select id="filter-type-action">
+              <option value="">Tous</option>
+            </select>
+          </div>
+
+          <div class="filter-group">
+            <label for="filter-financement">Financement</label>
+            <select id="filter-financement">
               <option value="">Tous</option>
             </select>
           </div>
@@ -114,17 +121,18 @@
               <input
                 type="text"
                 id="search"
-                placeholder="Titre, dépôt, session, formateur..."
+                placeholder="Titre, dépôt, session, intervenant..."
               >
             </div>
           </div>
         </div>
 
         <div class="filters-footer">
-          <div class="view-tabs" role="tablist" aria-label="Choix de la vue">
+          <div class="view-tabs" role="group" aria-label="Choix de la vue">
             <button type="button" class="view-tab is-active" data-view="catalogue">
               Vue catalogue
             </button>
+
             <button type="button" class="view-tab" data-view="calendrier">
               Vue calendrier
             </button>
@@ -134,7 +142,7 @@
             Réinitialiser les filtres
           </button>
         </div>
-      </div>
+      </section>
     </section>
 
     <section class="topbar">
