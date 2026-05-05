@@ -149,6 +149,28 @@ function getShortSessionName(sessionName) {
 }
 
 /* ----------------------------- */
+/* FINANCEMENT */
+/* ----------------------------- */
+
+function getFinancementShortLabel(value) {
+  const normalized = cleanSearch(value);
+
+  if (normalized.includes("fifpl")) return "FIFPL";
+  if (normalized.includes("dpc")) return "DPC";
+
+  return cleanText(value);
+}
+
+function getFinancementBadgeClass(value) {
+  const shortLabel = getFinancementShortLabel(value);
+
+  if (shortLabel === "FIFPL") return "badge-financement-fifpl";
+  if (shortLabel === "DPC") return "badge-financement-dpc";
+
+  return "badge-financement-default";
+}
+
+/* ----------------------------- */
 /* ICÔNES INFO-GRID */
 /* ----------------------------- */
 
@@ -226,6 +248,15 @@ function getInfoIcon(label) {
         <circle cx="12" cy="12" r="2.5"></circle>
         <path d="M6 12h.01"></path>
         <path d="M18 12h.01"></path>
+      </svg>
+    `,
+
+    "Financement": `
+      <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+        <rect x="2" y="5" width="20" height="14" rx="2"></rect>
+        <path d="M2 10h20"></path>
+        <path d="M7 15h.01"></path>
+        <path d="M11 15h4"></path>
       </svg>
     `
   };
@@ -835,6 +866,13 @@ function createFormationFromGroup(referenceAction, rows) {
       .filter(Boolean)
   );
 
+  const categorieProduit = getBestGroupValue(visibleSessionRows, rows, [
+    "Catégorie de Produit",
+    "Catégorie produit",
+    "Categorie de Produit",
+    "Categorie produit"
+  ]);
+
   return {
     referenceAction,
 
@@ -862,6 +900,9 @@ function createFormationFromGroup(referenceAction, rows) {
     typologie: formatLabel(getBestGroupValue(visibleSessionRows, rows, [
       "Typologie"
     ])),
+
+    categorieProduit,
+    financement: getFinancementShortLabel(categorieProduit),
 
     dureeTotale: formatHours(getBestGroupValue(visibleSessionRows, rows, [
       "Durée totale",
@@ -1140,6 +1181,8 @@ function renderCatalogue(data) {
     const publicBadgeClass = getPublicBadgeClass(formation);
     const typeActionShortLabel = getTypeActionShortLabel(formation.typeAction);
     const typeActionBadgeClass = getTypeActionBadgeClass(formation.typeAction);
+    const financementLabel = formation.financement;
+    const financementBadgeClass = getFinancementBadgeClass(formation.categorieProduit);
     const formateurs = formation.formateurs.length
       ? formation.formateurs.join(", ")
       : "";
@@ -1173,6 +1216,12 @@ function renderCatalogue(data) {
                 </span>
               ` : ""}
 
+              ${financementLabel ? `
+                <span class="badge badge-financement ${financementBadgeClass}">
+                  ${escapeHtml(financementLabel)}
+                </span>
+              ` : ""}
+
               ${formation.sessions.length ? `
                 <span class="badge badge-session-count">
                   ${formation.sessions.length} session${formation.sessions.length > 1 ? "s" : ""}
@@ -1203,6 +1252,7 @@ function renderCatalogue(data) {
                   ${createInfoBlock("Format", formation.format)}
                   ${createInfoBlock("Typologie", formation.typeAction)}
                   ${createInfoBlock("Type d’EPP", formation.typologie)}
+                  ${createInfoBlock("Financement", formation.categorieProduit)}
                   ${createInfoBlock("Durée totale", formation.dureeTotale)}
                   ${createInfoBlock("Formateur(s)", formateurs)}
                   ${createInfoBlock("Prise en charge", formation.priseEnCharge)}
@@ -1336,6 +1386,8 @@ function renderCalendar(data) {
             const publicBadgeClass = getPublicBadgeClass(formation);
             const typeActionShortLabel = getTypeActionShortLabel(formation.typeAction);
             const typeActionBadgeClass = getTypeActionBadgeClass(formation.typeAction);
+            const financementLabel = formation.financement;
+            const financementBadgeClass = getFinancementBadgeClass(formation.categorieProduit);
             const inscrits = hasValue(session.nombreInscrits)
               ? formatNumber(session.nombreInscrits)
               : "0";
@@ -1367,6 +1419,12 @@ function renderCalendar(data) {
                     ${typeActionShortLabel ? `
                       <span class="badge badge-type-action ${typeActionBadgeClass}">
                         ${escapeHtml(typeActionShortLabel)}
+                      </span>
+                    ` : ""}
+
+                    ${financementLabel ? `
+                      <span class="badge badge-financement ${financementBadgeClass}">
+                        ${escapeHtml(financementLabel)}
                       </span>
                     ` : ""}
 
@@ -1417,6 +1475,8 @@ function getFormationSearchHaystack(formation) {
     formation.format,
     formation.typeAction,
     formation.typologie,
+    formation.categorieProduit,
+    formation.financement,
     formation.dureeTotale,
     formation.priseEnCharge,
     formation.indemnitesPs,
@@ -1431,6 +1491,7 @@ function applyFilters() {
   const specialtyValue = cleanText(document.getElementById("filter-specialty").value);
   const formatValue = cleanText(document.getElementById("filter-format").value);
   const typeActionValue = cleanText(document.getElementById("filter-type-action").value);
+  const financementValue = cleanText(document.getElementById("filter-financement").value);
 
   filteredFormations = formations.filter(formation => {
     const families = getPublicFamiliesForFormation(formation);
@@ -1446,13 +1507,15 @@ function applyFilters() {
 
     const matchesFormat = !formatValue || formation.format === formatValue;
     const matchesTypeAction = !typeActionValue || formation.typeAction === typeActionValue;
+    const matchesFinancement = !financementValue || formation.financement === financementValue;
 
     return (
       matchesSearch &&
       matchesFamily &&
       matchesSpecialty &&
       matchesFormat &&
-      matchesTypeAction
+      matchesTypeAction &&
+      matchesFinancement
     );
   });
 
@@ -1465,20 +1528,20 @@ function renderCurrentView() {
   const count = document.getElementById("results-count");
 
   const sessionCount = filteredFormations.reduce((sum, formation) => {
-  return sum + formation.sessions.length;
-}, 0);
-
-const inscritCount = filteredFormations.reduce((sum, formation) => {
-  return sum + formation.sessions.reduce((sessionSum, session) => {
-    const value = Number(cleanText(session.nombreInscrits).replace(",", "."));
-    return sessionSum + (Number.isNaN(value) ? 0 : value);
+    return sum + formation.sessions.length;
   }, 0);
-}, 0);
 
-count.textContent =
-  `${filteredFormations.length} formation${filteredFormations.length > 1 ? "s" : ""} affichée${filteredFormations.length > 1 ? "s" : ""}` +
-  ` · ${sessionCount} session${sessionCount > 1 ? "s" : ""}` +
-  ` · ${formatNumber(inscritCount)} inscrit${inscritCount > 1 ? "s" : ""}`;
+  const inscritCount = filteredFormations.reduce((sum, formation) => {
+    return sum + formation.sessions.reduce((sessionSum, session) => {
+      const value = Number(cleanText(session.nombreInscrits).replace(",", "."));
+      return sessionSum + (Number.isNaN(value) ? 0 : value);
+    }, 0);
+  }, 0);
+
+  count.textContent =
+    `${filteredFormations.length} formation${filteredFormations.length > 1 ? "s" : ""} affichée${filteredFormations.length > 1 ? "s" : ""}` +
+    ` · ${sessionCount} session${sessionCount > 1 ? "s" : ""}` +
+    ` · ${formatNumber(inscritCount)} inscrit${inscritCount > 1 ? "s" : ""}`;
 
   if (activeView === "catalogue") {
     catalogueView.classList.remove("is-hidden");
@@ -1503,6 +1566,7 @@ function resetFilters() {
   document.getElementById("filter-specialty").value = "";
   document.getElementById("filter-format").value = "";
   document.getElementById("filter-type-action").value = "";
+  document.getElementById("filter-financement").value = "";
 
   syncPublicButtons();
   updateSpecialtyFilterOptions();
@@ -1570,13 +1634,18 @@ function initFilters() {
   const typeActions = uniqueValues(formations.map(item => item.typeAction))
     .sort((a, b) => a.localeCompare(b, "fr"));
 
+  const financements = uniqueValues(formations.map(item => item.financement))
+    .sort((a, b) => a.localeCompare(b, "fr"));
+
   populateSelect("filter-format", formats, "Tous");
   populateSelect("filter-type-action", typeActions, "Tous", getTypeActionFilterLabel);
+  populateSelect("filter-financement", financements, "Tous");
 
   document.getElementById("search").addEventListener("input", applyFilters);
   document.getElementById("filter-specialty").addEventListener("change", applyFilters);
   document.getElementById("filter-format").addEventListener("change", applyFilters);
   document.getElementById("filter-type-action").addEventListener("change", applyFilters);
+  document.getElementById("filter-financement").addEventListener("change", applyFilters);
   document.getElementById("reset-filters").addEventListener("click", resetFilters);
 
   document.querySelectorAll(".public-pill").forEach(button => {
