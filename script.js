@@ -1217,10 +1217,11 @@ function renderCatalogue(data) {
                   ${createInfoBlock("Prise en charge", formation.priseEnCharge)}
                   ${createInfoBlock("Indemnités PS", formation.indemnitesPs)}
                 </div>
+                ${createMemoButton(formation.ficheMemoPdf)}
               </aside>
             </div>
 
-            ${createMemoButton(formation.ficheMemoPdf)}
+            
           </div>
         </div>
       </article>
