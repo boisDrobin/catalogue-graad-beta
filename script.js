@@ -615,6 +615,19 @@ function getPublicBadgeClass(formation) {
   return "badge-public-empty";
 }
 
+function getPublicFamilyBadgeClass(value) {
+  const map = {
+    medecins: "badge-public-medecins",
+    infirmiers: "badge-public-infirmiers",
+    pharmaciens: "badge-public-pharmaciens",
+    "sages-femmes": "badge-public-sages-femmes",
+    kines: "badge-public-kines",
+    dentistes: "badge-public-dentistes"
+  };
+
+  return map[value] || "badge-public-empty";
+}
+
 /* ----------------------------- */
 /* FORMAT / TYPE D'ACTION / BADGES */
 /* ----------------------------- */
@@ -714,6 +727,10 @@ function getFormatClass(format) {
   }
 
   return "format-default";
+}
+
+function getFormatBadgeClass(format) {
+  return getFormatClass(format).replace("format-", "badge-format-");
 }
 
 function getStatusBadgeClass(status) {
@@ -1141,7 +1158,7 @@ function renderCatalogue(data) {
               </span>
 
               ${formation.format ? `
-                <span class="badge badge-format ${formatClass.replace("format-", "badge-format-")}">
+                <span class="badge badge-format ${getFormatBadgeClass(formation.format)}">
                   ${escapeHtml(formation.format)}
                 </span>
               ` : ""}
@@ -1576,7 +1593,7 @@ function renderActiveFilters() {
       "public",
       activePublicFamily,
       getPublicFamilyLabel(activePublicFamily),
-      "active-filter-public"
+      `badge badge-public ${getPublicFamilyBadgeClass(activePublicFamily)}`
     ));
   }
 
@@ -1585,7 +1602,7 @@ function renderActiveFilters() {
       "specialty",
       activeSpecialty,
       activeSpecialty.replace(/^Médecin\s-\s/, ""),
-      "active-filter-specialty"
+      "badge badge-public badge-public-medecins"
     ));
   }
 
@@ -1594,7 +1611,7 @@ function renderActiveFilters() {
       "format",
       value,
       value,
-      "active-filter-format"
+      `badge badge-format ${getFormatBadgeClass(value)}`
     ));
   });
 
@@ -1603,7 +1620,7 @@ function renderActiveFilters() {
       "type-action",
       value,
       getActiveTypeActionLabel(value),
-      "active-filter-type-action"
+      `badge badge-type-action ${getTypeActionBadgeClass(value)}`
     ));
   });
 
@@ -1612,7 +1629,7 @@ function renderActiveFilters() {
       "financement",
       value,
       value,
-      "active-filter-financement"
+      `badge badge-financement ${getFinancementBadgeClass(value)}`
     ));
   });
 
