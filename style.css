@@ -782,6 +782,45 @@ h1 {
   word-break: break-word;
 }
 
+/* ENCARD FICHE MÉMO */
+
+.info-block-link {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.info-block-link:hover {
+  transform: translateY(-1px);
+  border-color: #d4c5a7;
+  background: linear-gradient(180deg, #fffaf0 0%, #f8f1e3 100%);
+  box-shadow: 0 8px 18px rgba(40, 33, 20, 0.06);
+}
+
+.memo-info-block {
+  border-color: rgba(153, 135, 78, 0.35);
+}
+
+.memo-info-block .info-icon {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #ffffff;
+}
+
+.memo-info-block .info-value {
+  color: var(--accent-dark);
+  font-weight: 800;
+}
+
+.memo-info-block .info-icon svg {
+  stroke: currentColor;
+}
+
 .public-specialite-list {
   display: inline;
 }
@@ -837,49 +876,6 @@ h1 {
   font-size: 14px;
   line-height: 1.8;
   white-space: pre-line;
-}
-
-/* BOUTON FICHE MÉMO */
-
-.memo-button-wrap {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 18px;
-}
-.formation-sidebar .memo-button-wrap {
-  margin-top: 14px;
-  justify-content: flex-end;
-}
-
-.memo-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  padding: 10px 14px;
-  border-radius: var(--radius-pill);
-  border: 1px solid var(--accent);
-  background: var(--accent);
-  color: #ffffff;
-  font-size: 13px;
-  font-weight: 700;
-  text-decoration: none;
-  box-shadow: 0 8px 18px rgba(153, 135, 78, 0.18);
-  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
-}
-
-.memo-button:hover {
-  transform: translateY(-1px);
-  background: #8a7944;
-  border-color: #8a7944;
-  box-shadow: 0 12px 22px rgba(153, 135, 78, 0.22);
-}
-
-.memo-button svg {
-  width: 16px;
-  height: 16px;
-  stroke: currentColor;
-  flex: 0 0 auto;
 }
 
 /* SESSION CARDS */
@@ -1149,14 +1145,6 @@ h1 {
 
   .formation-sidebar .info-value {
     font-size: 13px;
-  }
-
-  .memo-button-wrap {
-    justify-content: stretch;
-  }
-
-  .memo-button {
-    width: 100%;
   }
 
   .session-card-header {
