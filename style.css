@@ -638,12 +638,75 @@ h1 {
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-pill);
-  background: color-mix(in srgb, currentColor 58%, transparent);
   color: #ffffff;
   font-size: 14px;
   font-weight: 300;
   line-height: 1;
 }
+
+/* Couleur de la pastille selon la couleur du texte du badge clair */
+
+.badge-public-medecins .active-filter-remove {
+  background: rgba(29, 78, 216, 0.62);
+}
+
+.badge-public-infirmiers .active-filter-remove {
+  background: rgba(15, 118, 110, 0.62);
+}
+
+.badge-public-pharmaciens .active-filter-remove {
+  background: rgba(21, 128, 61, 0.62);
+}
+
+.badge-public-sages-femmes .active-filter-remove {
+  background: rgba(190, 24, 93, 0.62);
+}
+
+.badge-public-kines .active-filter-remove {
+  background: rgba(194, 65, 12, 0.62);
+}
+
+.badge-public-dentistes .active-filter-remove {
+  background: rgba(67, 56, 202, 0.62);
+}
+
+.badge-public-mixte .active-filter-remove {
+  background: rgba(109, 40, 217, 0.62);
+}
+
+.badge-public-empty .active-filter-remove {
+  background: rgba(107, 114, 128, 0.62);
+}
+
+.badge-type-epp .active-filter-remove {
+  background: rgba(185, 28, 28, 0.62);
+}
+
+.badge-type-fc .active-filter-remove {
+  background: rgba(3, 105, 161, 0.62);
+}
+
+.badge-type-pi .active-filter-remove {
+  background: rgba(162, 28, 175, 0.62);
+}
+
+.badge-type-default .active-filter-remove {
+  background: rgba(82, 82, 91, 0.62);
+}
+
+.badge-financement-dpc .active-filter-remove {
+  background: rgba(4, 120, 87, 0.62);
+}
+
+.badge-financement-fifpl .active-filter-remove {
+  background: rgba(180, 83, 9, 0.62);
+}
+
+.badge-financement-default .active-filter-remove {
+  background: rgba(82, 82, 91, 0.62);
+}
+
+/* Formats foncés : pastille blanche transparente + croix blanche */
 
 .badge-format .active-filter-remove,
 .badge-format-classe-virtuelle .active-filter-remove,
@@ -651,7 +714,7 @@ h1 {
 .badge-format-presentiel .active-filter-remove,
 .badge-format-mixte-presentiel .active-filter-remove,
 .badge-format-mixte-classe-virtuelle .active-filter-remove {
-  background: rgba(255, 255, 255, 0.2);
+  background: rgba(255, 255, 255, 0.22);
   color: #ffffff;
 }
 
