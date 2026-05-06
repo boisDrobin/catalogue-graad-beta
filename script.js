@@ -1,6 +1,7 @@
 let formations = [];
 let filteredFormations = [];
 let activePublicFamily = "medecins";
+let activeSpecialty = "";
 
 const CSV_PATH = "./data/data.csv";
 const CSV_IMPORT_DATE = "2026-05-04";
@@ -1266,6 +1267,130 @@ function bindInlineToggles() {
 }
 
 /* ----------------------------- */
+/* SINGLE SELECT CUSTOM */
+/* ----------------------------- */
+
+function closeSingleFilterMenu() {
+  const button = document.getElementById("filter-specialty-button");
+  const menu = document.getElementById("filter-specialty-menu");
+
+  if (button) button.setAttribute("aria-expanded", "false");
+  if (menu) menu.hidden = true;
+}
+
+function toggleSingleFilterMenu() {
+  const button = document.getElementById("filter-specialty-button");
+  const menu = document.getElementById("filter-specialty-menu");
+
+  if (!button || !menu || button.disabled) return;
+
+  const isOpen = !menu.hidden;
+
+  closeAllMultiFilterMenus();
+  menu.hidden = isOpen;
+  button.setAttribute("aria-expanded", String(!isOpen));
+}
+
+function updateSingleFilterButton(labelText) {
+  const button = document.getElementById("filter-specialty-button");
+  if (!button) return;
+
+  const label = button.querySelector(".single-filter-label");
+  if (!label) return;
+
+  label.textContent = labelText;
+}
+
+function createSingleFilterOption(value, label, isActive = false) {
+  return `
+    <button
+      type="button"
+      class="single-filter-option ${isActive ? "is-selected" : ""}"
+      data-value="${escapeHtml(value)}"
+    >
+      ${escapeHtml(label)}
+    </button>
+  `;
+}
+
+function populateSingleFilter(values) {
+  const container = document.getElementById("filter-specialty-options");
+  if (!container) return;
+
+  const optionsHtml = [
+    createSingleFilterOption("", "Toutes", activeSpecialty === ""),
+    ...values.map(value => createSingleFilterOption(
+      value,
+      value.replace(/^Médecin\s-\s/, ""),
+      activeSpecialty === value
+    ))
+  ].join("");
+
+  container.innerHTML = optionsHtml;
+
+  container.querySelectorAll(".single-filter-option").forEach(option => {
+    option.addEventListener("click", event => {
+      event.stopPropagation();
+
+      activeSpecialty = option.getAttribute("data-value") || "";
+
+      updateSingleFilterButton(
+        activeSpecialty
+          ? activeSpecialty.replace(/^Médecin\s-\s/, "")
+          : "Toutes"
+      );
+
+      populateSingleFilter(values);
+      closeSingleFilterMenu();
+      applyFilters();
+    });
+  });
+}
+
+function bindSingleFilterButton() {
+  const button = document.getElementById("filter-specialty-button");
+  const menu = document.getElementById("filter-specialty-menu");
+
+  if (!button || !menu) return;
+
+  button.addEventListener("click", event => {
+    event.stopPropagation();
+    toggleSingleFilterMenu();
+  });
+
+  menu.addEventListener("click", event => {
+    event.stopPropagation();
+  });
+}
+
+function disableSpecialtyFilter() {
+  const button = document.getElementById("filter-specialty-button");
+  const menu = document.getElementById("filter-specialty-menu");
+  const options = document.getElementById("filter-specialty-options");
+
+  activeSpecialty = "";
+
+  if (button) {
+    button.disabled = true;
+    button.setAttribute("aria-expanded", "false");
+
+    const label = button.querySelector(".single-filter-label");
+    if (label) label.textContent = "Aucune";
+  }
+
+  if (menu) menu.hidden = true;
+  if (options) options.innerHTML = "";
+}
+
+function enableSpecialtyFilter() {
+  const button = document.getElementById("filter-specialty-button");
+
+  if (button) {
+    button.disabled = false;
+  }
+}
+
+/* ----------------------------- */
 /* MULTISELECT FILTERS */
 /* ----------------------------- */
 
@@ -1319,6 +1444,7 @@ function toggleMultiFilterMenu(filterName) {
 
   const isOpen = !menu.hidden;
 
+  closeSingleFilterMenu();
   closeAllMultiFilterMenus(filterName);
 
   menu.hidden = isOpen;
@@ -1386,16 +1512,6 @@ function bindMultiFilterButtons() {
       event.stopPropagation();
     });
   });
-
-  document.addEventListener("click", () => {
-    closeAllMultiFilterMenus();
-  });
-
-  document.addEventListener("keydown", event => {
-    if (event.key === "Escape") {
-      closeAllMultiFilterMenus();
-    }
-  });
 }
 
 function resetMultiFilters() {
@@ -1450,7 +1566,6 @@ function getFormationSearchHaystack(formation) {
 
 function applyFilters() {
   const searchValue = cleanSearch(document.getElementById("search").value);
-  const specialtyValue = cleanText(document.getElementById("filter-specialty").value);
 
   const selectedFormats = getSelectedMultiValues("format");
   const selectedTypeActions = getSelectedMultiValues("type-action");
@@ -1466,8 +1581,8 @@ function applyFilters() {
 
     const matchesSpecialty =
       activePublicFamily !== "medecins" ||
-      !specialtyValue ||
-      specialties.includes(specialtyValue);
+      !activeSpecialty ||
+      specialties.includes(activeSpecialty);
 
     const matchesFormat =
       !selectedFormats.length ||
@@ -1518,9 +1633,9 @@ function renderCurrentView() {
 
 function resetFilters() {
   activePublicFamily = "";
+  activeSpecialty = "";
 
   document.getElementById("search").value = "";
-  document.getElementById("filter-specialty").value = "";
 
   resetMultiFilters();
 
@@ -1537,14 +1652,12 @@ function syncPublicButtons() {
 }
 
 function updateSpecialtyFilterOptions() {
-  const select = document.getElementById("filter-specialty");
-
   if (activePublicFamily !== "medecins") {
-    select.disabled = true;
-    select.innerHTML = `<option value="">Aucune</option>`;
-    select.value = "";
+    disableSpecialtyFilter();
     return;
   }
+
+  enableSpecialtyFilter();
 
   const specialties = uniqueValues(
     formations
@@ -1552,15 +1665,19 @@ function updateSpecialtyFilterOptions() {
       .filter(Boolean)
   ).sort((a, b) => a.localeCompare(b, "fr"));
 
-  select.disabled = false;
-  select.innerHTML = `<option value="">Toutes</option>`;
+  const specialtyExists = specialties.includes(activeSpecialty);
 
-  specialties.forEach(specialty => {
-    const option = document.createElement("option");
-    option.value = specialty;
-    option.textContent = specialty.replace(/^Médecin\s-\s/, "");
-    select.appendChild(option);
-  });
+  if (!specialtyExists) {
+    activeSpecialty = "";
+  }
+
+  updateSingleFilterButton(
+    activeSpecialty
+      ? activeSpecialty.replace(/^Médecin\s-\s/, "")
+      : "Toutes"
+  );
+
+  populateSingleFilter(specialties);
 }
 
 function initFilters() {
@@ -1577,19 +1694,33 @@ function initFilters() {
   populateMultiFilter("type-action", typeActions, getTypeActionFilterLabel);
   populateMultiFilter("financement", financements);
 
+  bindSingleFilterButton();
   bindMultiFilterButtons();
 
   document.getElementById("search").addEventListener("input", applyFilters);
-  document.getElementById("filter-specialty").addEventListener("change", applyFilters);
   document.getElementById("reset-filters").addEventListener("click", resetFilters);
 
   document.querySelectorAll(".public-pill").forEach(button => {
     button.addEventListener("click", () => {
       activePublicFamily = button.getAttribute("data-public-value") || "";
+      activeSpecialty = "";
+
       syncPublicButtons();
       updateSpecialtyFilterOptions();
       applyFilters();
     });
+  });
+
+  document.addEventListener("click", () => {
+    closeSingleFilterMenu();
+    closeAllMultiFilterMenus();
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      closeSingleFilterMenu();
+      closeAllMultiFilterMenus();
+    }
   });
 
   syncPublicButtons();
