@@ -608,27 +608,20 @@ h1 {
   max-width: 260px;
   padding: 8px 10px 8px 12px;
   border-radius: var(--radius-pill);
-  border: 1px solid #e6dcc0;
-  background: #f4efdf;
-  color: var(--accent-dark);
   font-family: inherit;
-  font-size: 12px;
-  font-weight: 700;
   line-height: 1;
   cursor: pointer;
   white-space: nowrap;
   transition:
     transform 0.2s ease,
-    background 0.2s ease,
-    border-color 0.2s ease,
-    box-shadow 0.2s ease;
+    box-shadow 0.2s ease,
+    opacity 0.2s ease;
 }
 
 .active-filter-badge:hover {
   transform: translateY(-1px);
-  background: #efe6d1;
-  border-color: #d1c199;
-  box-shadow: 0 6px 14px rgba(40, 33, 20, 0.06);
+  box-shadow: 0 6px 14px rgba(40, 33, 20, 0.08);
+  opacity: 0.92;
 }
 
 .active-filter-badge span:first-child {
@@ -652,34 +645,14 @@ h1 {
   line-height: 1;
 }
 
-.active-filter-public {
-  background: #eff6ff;
-  color: #1d4ed8;
-  border-color: #bfdbfe;
-}
-
-.active-filter-specialty {
-  background: #f5f3ff;
-  color: #6d28d9;
-  border-color: #ddd6fe;
-}
-
-.active-filter-format {
-  background: #f1f5f2;
-  color: #4e654f;
-  border-color: #cddccd;
-}
-
-.active-filter-type-action {
-  background: #fef2f2;
-  color: #b91c1c;
-  border-color: #fecaca;
-}
-
-.active-filter-financement {
-  background: #ecfdf5;
-  color: #047857;
-  border-color: #a7f3d0;
+.badge-format .active-filter-remove,
+.badge-format-classe-virtuelle .active-filter-remove,
+.badge-format-elearning .active-filter-remove,
+.badge-format-presentiel .active-filter-remove,
+.badge-format-mixte-presentiel .active-filter-remove,
+.badge-format-mixte-classe-virtuelle .active-filter-remove {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
 }
 
 .reset-button {
