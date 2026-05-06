@@ -3,7 +3,13 @@ let filteredFormations = [];
 let activePublicFamily = "medecins";
 
 const CSV_PATH = "./data/data.csv";
-const CSV_IMPORT_DATE = "2026-05-06";
+const CSV_IMPORT_DATE = "2026-05-04";
+
+const multiFilterState = {
+  format: [],
+  "type-action": [],
+  financement: []
+};
 
 /* ----------------------------- */
 /* UTILITAIRES */
@@ -185,7 +191,6 @@ function getInfoIcon(label) {
         <path d="M4 17h.01"></path>
       </svg>
     `,
-
     "Public / Spécialité": `
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path>
@@ -194,7 +199,6 @@ function getInfoIcon(label) {
         <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
       </svg>
     `,
-
     "Format": `
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <rect x="3" y="4" width="18" height="14" rx="2"></rect>
@@ -202,7 +206,6 @@ function getInfoIcon(label) {
         <path d="M12 18v2"></path>
       </svg>
     `,
-
     "Typologie": `
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M4 6h16"></path>
@@ -210,21 +213,18 @@ function getInfoIcon(label) {
         <path d="M4 18h7"></path>
       </svg>
     `,
-
     "Type d’EPP": `
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 20h9"></path>
         <path d="M16.5 3.5a2.12 2.12 0 1 1 3 3L7 19l-4 1 1-4Z"></path>
       </svg>
     `,
-
     "Durée totale": `
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <circle cx="12" cy="12" r="9"></circle>
         <path d="M12 7v5l3 3"></path>
       </svg>
     `,
-
     "Formateur(s)": `
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M22 10v6"></path>
@@ -233,14 +233,12 @@ function getInfoIcon(label) {
         <path d="M6 10.8V16c0 1.7 2.7 3 6 3s6-1.3 6-3v-5.2"></path>
       </svg>
     `,
-
     "Prise en charge": `
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <path d="M12 1v22"></path>
         <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7H15a3.5 3.5 0 0 1 0 7H6"></path>
       </svg>
     `,
-
     "Indemnités PS": `
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="5" width="20" height="14" rx="2"></rect>
@@ -249,7 +247,6 @@ function getInfoIcon(label) {
         <path d="M18 12h.01"></path>
       </svg>
     `,
-
     "Financement": `
       <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
         <rect x="2" y="5" width="20" height="14" rx="2"></rect>
@@ -478,108 +475,86 @@ function getMedicalSpecialtyLabel(rawPublic) {
   const map = {
     "allergologie": "Médecin - Allergologie",
     "allergologue": "Médecin - Allergologie",
-
     "generaliste": "Médecin - Généraliste",
     "generalistes": "Médecin - Généraliste",
     "medecine generale": "Médecin - Médecine générale",
-
     "cardiologie": "Médecin - Cardiologie",
     "cardiologue": "Médecin - Cardiologie",
     "cardiologues": "Médecin - Cardiologie",
     "medecine cardiovasculaire": "Médecin - Médecine cardiovasculaire",
-
     "gynecologie": "Médecin - Gynécologie",
     "gynecologue": "Médecin - Gynécologie",
     "gynecologues": "Médecin - Gynécologie",
     "gynecologie medicale": "Médecin - Gynécologie",
     "gynecologie obstetrique": "Médecin - Gynécologie",
-
     "ophtalmologie": "Médecin - Ophtalmologie",
     "ophtalmologue": "Médecin - Ophtalmologie",
     "ophtalmologues": "Médecin - Ophtalmologie",
-
     "pediatrie": "Médecin - Pédiatrie",
     "pediatre": "Médecin - Pédiatrie",
     "pediatres": "Médecin - Pédiatrie",
-
     "dermatologie": "Médecin - Dermatologie",
     "dermatologie et venereologie": "Médecin - Dermatologie et vénéréologie",
     "dermatologue": "Médecin - Dermatologie",
     "dermatologues": "Médecin - Dermatologie",
     "dermatologue et venerologue": "Médecin - Dermatologie et vénéréologie",
     "dermatologues et venerologues": "Médecin - Dermatologie et vénéréologie",
-
     "anesthesie reanimation": "Médecin - Anesthésie-réanimation",
     "anesthesiste": "Médecin - Anesthésie-réanimation",
     "anesthesistes": "Médecin - Anesthésie-réanimation",
     "anesthesiste reanimateur": "Médecin - Anesthésie-réanimation",
     "anesthesiste reanimateurs": "Médecin - Anesthésie-réanimation",
-
     "immunologie": "Médecin - Immunologie",
     "medecine interne": "Médecin - Médecine interne",
     "medecin interne": "Médecin - Médecine interne",
     "medecins internes": "Médecin - Médecine interne",
     "medecine interne et immunologie clinique": "Médecin - Médecine interne et immunologie clinique",
-
     "endocrinologie": "Médecin - Endocrinologie",
     "endocrinologie diabetologie nutrition": "Médecin - Endocrinologie-diabétologie-nutrition",
     "endocrinologue": "Médecin - Endocrinologie-diabétologie-nutrition",
     "endocrinologues": "Médecin - Endocrinologie-diabétologie-nutrition",
     "endocrinologue, diabetologue et metaboliste": "Médecin - Endocrinologie-diabétologie-nutrition",
     "endocrinologues, diabetologues et metabolistes": "Médecin - Endocrinologie-diabétologie-nutrition",
-
     "oncologie": "Médecin - Oncologie",
     "oncologue": "Médecin - Oncologie",
     "oncologues": "Médecin - Oncologie",
-
     "psychiatrie": "Médecin - Psychiatrie",
     "psychiatre": "Médecin - Psychiatrie",
     "psychiatres": "Médecin - Psychiatrie",
-
     "hepato gastro enterologie": "Médecin - Hépato-gastro-entérologie",
     "hepato gastro enterologue": "Médecin - Hépato-gastro-entérologie",
     "hepato gastro enterologues": "Médecin - Hépato-gastro-entérologie",
-
     "geriatrie": "Médecin - Gériatrie",
     "geriatrie gerontologie": "Médecin - Gériatrie / Gérontologie",
     "geriatre": "Médecin - Gériatrie / Gérontologie",
     "geriatres": "Médecin - Gériatrie / Gérontologie",
     "geriatre, gerontologue": "Médecin - Gériatrie / Gérontologie",
     "geriatres, gerontologues": "Médecin - Gériatrie / Gérontologie",
-
     "maladies infectieuses et tropicales": "Médecin - Maladies infectieuses et tropicales",
     "maladie infectieuse et tropicale": "Médecin - Maladies infectieuses et tropicales",
-
     "medecine d'urgence": "Médecin - Médecine d'urgence",
     "medecine d urgence": "Médecin - Médecine d'urgence",
     "urgentiste": "Médecin - Médecine d'urgence",
     "urgentistes": "Médecin - Médecine d'urgence",
-
     "medecine physique et de readaptation": "Médecin - Médecine physique et de réadaptation",
     "medecin physique et de readaptation": "Médecin - Médecine physique et de réadaptation",
     "medecins physiques et de readaptation": "Médecin - Médecine physique et de réadaptation",
-
     "medecine vasculaire": "Médecin - Médecine vasculaire",
     "medecin vasculaire": "Médecin - Médecine vasculaire",
     "medecins vasculaires": "Médecin - Médecine vasculaire",
-
     "neurologie": "Médecin - Neurologie",
     "neurologue": "Médecin - Neurologie",
     "neurologues": "Médecin - Neurologie",
-
     "nephrologie": "Médecin - Néphrologie",
     "nephrologue": "Médecin - Néphrologie",
     "nephrologues": "Médecin - Néphrologie",
-
     "pneumologie": "Médecin - Pneumologie",
     "pneumologue": "Médecin - Pneumologie",
     "pneumologues": "Médecin - Pneumologie",
-
     "radiologie": "Médecin - Radiologie et imagerie médicale",
     "radiologue": "Médecin - Radiologie et imagerie médicale",
     "radiologues": "Médecin - Radiologie et imagerie médicale",
     "radiologie et imagerie medicale": "Médecin - Radiologie et imagerie médicale",
-
     "rhumatologie": "Médecin - Rhumatologie",
     "rhumatologue": "Médecin - Rhumatologie",
     "rhumatologues": "Médecin - Rhumatologie"
@@ -600,9 +575,7 @@ function getPublicsForFormation(formation) {
 function getPublicBadgeLabel(formation) {
   const publics = getPublicsForFormation(formation);
 
-  if (publics.length > 1) {
-    return "Public Mixte";
-  }
+  if (publics.length > 1) return "Public Mixte";
 
   return getPublicLabel(publics[0] || formation.publicSpecialite);
 }
@@ -752,7 +725,7 @@ function getStatusBadgeClass(status) {
 }
 
 /* ----------------------------- */
-/* TRANSFORMATION CSV → FORMATIONS */
+/* CSV → FORMATIONS */
 /* ----------------------------- */
 
 function createSessionFromRow(row) {
@@ -795,9 +768,7 @@ function groupRawRowsByReferenceAction(rows) {
 function createFormationFromGroup(referenceAction, rows) {
   const visibleSessionRows = rows.filter(shouldKeepSession);
 
-  if (!visibleSessionRows.length) {
-    return null;
-  }
+  if (!visibleSessionRows.length) return null;
 
   const sessions = visibleSessionRows
     .map(createSessionFromRow)
@@ -1234,6 +1205,10 @@ function renderCatalogue(data) {
   bindInlineToggles();
 }
 
+/* ----------------------------- */
+/* INTERACTIONS CARTES */
+/* ----------------------------- */
+
 function bindFormationToggles() {
   const headers = document.querySelectorAll(".formation-header");
 
@@ -1291,6 +1266,154 @@ function bindInlineToggles() {
 }
 
 /* ----------------------------- */
+/* MULTISELECT FILTERS */
+/* ----------------------------- */
+
+function getMultiFilterLabel(filterName, defaultLabel) {
+  const selected = multiFilterState[filterName] || [];
+
+  if (!selected.length) return defaultLabel;
+  if (selected.length === 1) return selected[0];
+
+  return `${selected.length} sélectionnés`;
+}
+
+function updateMultiFilterButton(filterName) {
+  const button = document.getElementById(`filter-${filterName}-button`);
+  if (!button) return;
+
+  const label = button.querySelector(".multi-filter-label");
+  if (!label) return;
+
+  const defaults = {
+    format: "Tous",
+    "type-action": "Toutes",
+    financement: "Tous"
+  };
+
+  label.textContent = getMultiFilterLabel(filterName, defaults[filterName] || "Tous");
+}
+
+function getSelectedMultiValues(filterName) {
+  return multiFilterState[filterName] || [];
+}
+
+function closeAllMultiFilterMenus(exceptFilterName = "") {
+  document.querySelectorAll(".multi-filter").forEach(filter => {
+    const filterName = filter.getAttribute("data-filter");
+    if (filterName === exceptFilterName) return;
+
+    const button = document.getElementById(`filter-${filterName}-button`);
+    const menu = document.getElementById(`filter-${filterName}-menu`);
+
+    if (button) button.setAttribute("aria-expanded", "false");
+    if (menu) menu.hidden = true;
+  });
+}
+
+function toggleMultiFilterMenu(filterName) {
+  const button = document.getElementById(`filter-${filterName}-button`);
+  const menu = document.getElementById(`filter-${filterName}-menu`);
+
+  if (!button || !menu) return;
+
+  const isOpen = !menu.hidden;
+
+  closeAllMultiFilterMenus(filterName);
+
+  menu.hidden = isOpen;
+  button.setAttribute("aria-expanded", String(!isOpen));
+}
+
+function createMultiFilterOption(filterName, value, label) {
+  const id = `multi-${filterName}-${cleanSearch(value).replace(/[^a-z0-9]+/g, "-")}`;
+
+  return `
+    <label class="multi-filter-option" for="${escapeHtml(id)}">
+      <input
+        type="checkbox"
+        id="${escapeHtml(id)}"
+        value="${escapeHtml(value)}"
+        data-filter-name="${escapeHtml(filterName)}"
+      >
+      <span>${escapeHtml(label || value)}</span>
+    </label>
+  `;
+}
+
+function populateMultiFilter(filterName, values, labelFormatter = null) {
+  const container = document.getElementById(`filter-${filterName}-options`);
+  if (!container) return;
+
+  container.innerHTML = values
+    .map(value => createMultiFilterOption(
+      filterName,
+      value,
+      labelFormatter ? labelFormatter(value) : value
+    ))
+    .join("");
+
+  container.querySelectorAll("input[type='checkbox']").forEach(input => {
+    input.addEventListener("change", () => {
+      const selected = Array.from(container.querySelectorAll("input[type='checkbox']:checked"))
+        .map(item => item.value);
+
+      multiFilterState[filterName] = selected;
+
+      updateMultiFilterButton(filterName);
+      applyFilters();
+    });
+  });
+
+  updateMultiFilterButton(filterName);
+}
+
+function bindMultiFilterButtons() {
+  document.querySelectorAll(".multi-filter-button").forEach(button => {
+    button.addEventListener("click", event => {
+      event.stopPropagation();
+
+      const filter = button.closest(".multi-filter");
+      if (!filter) return;
+
+      const filterName = filter.getAttribute("data-filter");
+      toggleMultiFilterMenu(filterName);
+    });
+  });
+
+  document.querySelectorAll(".multi-filter-menu").forEach(menu => {
+    menu.addEventListener("click", event => {
+      event.stopPropagation();
+    });
+  });
+
+  document.addEventListener("click", () => {
+    closeAllMultiFilterMenus();
+  });
+
+  document.addEventListener("keydown", event => {
+    if (event.key === "Escape") {
+      closeAllMultiFilterMenus();
+    }
+  });
+}
+
+function resetMultiFilters() {
+  Object.keys(multiFilterState).forEach(filterName => {
+    multiFilterState[filterName] = [];
+
+    const container = document.getElementById(`filter-${filterName}-options`);
+    if (container) {
+      container.querySelectorAll("input[type='checkbox']").forEach(input => {
+        input.checked = false;
+      });
+    }
+
+    updateMultiFilterButton(filterName);
+  });
+}
+
+/* ----------------------------- */
 /* FILTRES */
 /* ----------------------------- */
 
@@ -1328,9 +1451,10 @@ function getFormationSearchHaystack(formation) {
 function applyFilters() {
   const searchValue = cleanSearch(document.getElementById("search").value);
   const specialtyValue = cleanText(document.getElementById("filter-specialty").value);
-  const formatValue = cleanText(document.getElementById("filter-format").value);
-  const typeActionValue = cleanText(document.getElementById("filter-type-action").value);
-  const financementValue = cleanText(document.getElementById("filter-financement").value);
+
+  const selectedFormats = getSelectedMultiValues("format");
+  const selectedTypeActions = getSelectedMultiValues("type-action");
+  const selectedFinancements = getSelectedMultiValues("financement");
 
   filteredFormations = formations.filter(formation => {
     const families = getPublicFamiliesForFormation(formation);
@@ -1339,14 +1463,23 @@ function applyFilters() {
 
     const matchesSearch = !searchValue || haystack.includes(searchValue);
     const matchesFamily = !activePublicFamily || families.includes(activePublicFamily);
+
     const matchesSpecialty =
       activePublicFamily !== "medecins" ||
       !specialtyValue ||
       specialties.includes(specialtyValue);
 
-    const matchesFormat = !formatValue || formation.format === formatValue;
-    const matchesTypeAction = !typeActionValue || formation.typeAction === typeActionValue;
-    const matchesFinancement = !financementValue || formation.financement === financementValue;
+    const matchesFormat =
+      !selectedFormats.length ||
+      selectedFormats.includes(formation.format);
+
+    const matchesTypeAction =
+      !selectedTypeActions.length ||
+      selectedTypeActions.includes(formation.typeAction);
+
+    const matchesFinancement =
+      !selectedFinancements.length ||
+      selectedFinancements.includes(formation.financement);
 
     return (
       matchesSearch &&
@@ -1388,9 +1521,8 @@ function resetFilters() {
 
   document.getElementById("search").value = "";
   document.getElementById("filter-specialty").value = "";
-  document.getElementById("filter-format").value = "";
-  document.getElementById("filter-type-action").value = "";
-  document.getElementById("filter-financement").value = "";
+
+  resetMultiFilters();
 
   syncPublicButtons();
   updateSpecialtyFilterOptions();
@@ -1431,19 +1563,6 @@ function updateSpecialtyFilterOptions() {
   });
 }
 
-function populateSelect(selectId, values, defaultLabel, labelFormatter = null) {
-  const select = document.getElementById(selectId);
-
-  select.innerHTML = `<option value="">${defaultLabel}</option>`;
-
-  values.forEach(value => {
-    const option = document.createElement("option");
-    option.value = value;
-    option.textContent = labelFormatter ? labelFormatter(value) : value;
-    select.appendChild(option);
-  });
-}
-
 function initFilters() {
   const formats = uniqueValues(formations.map(item => item.format))
     .sort((a, b) => a.localeCompare(b, "fr"));
@@ -1454,15 +1573,14 @@ function initFilters() {
   const financements = uniqueValues(formations.map(item => item.financement))
     .sort((a, b) => a.localeCompare(b, "fr"));
 
-  populateSelect("filter-format", formats, "Tous");
-  populateSelect("filter-type-action", typeActions, "Tous", getTypeActionFilterLabel);
-  populateSelect("filter-financement", financements, "Tous");
+  populateMultiFilter("format", formats);
+  populateMultiFilter("type-action", typeActions, getTypeActionFilterLabel);
+  populateMultiFilter("financement", financements);
+
+  bindMultiFilterButtons();
 
   document.getElementById("search").addEventListener("input", applyFilters);
   document.getElementById("filter-specialty").addEventListener("change", applyFilters);
-  document.getElementById("filter-format").addEventListener("change", applyFilters);
-  document.getElementById("filter-type-action").addEventListener("change", applyFilters);
-  document.getElementById("filter-financement").addEventListener("change", applyFilters);
   document.getElementById("reset-filters").addEventListener("click", resetFilters);
 
   document.querySelectorAll(".public-pill").forEach(button => {
