@@ -946,6 +946,33 @@ function createInfoBlockHtml(label, htmlValue) {
   `;
 }
 
+function createMemoInfoBlock(url) {
+  if (!hasValue(url)) return "";
+
+  return `
+    <a
+      class="info-block info-block-link memo-info-block"
+      href="${escapeHtml(url)}"
+      target="_blank"
+      rel="noopener noreferrer"
+    >
+      <div class="info-icon" aria-hidden="true">
+        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z"></path>
+          <path d="M14 3v6h6"></path>
+          <path d="M9 15h6"></path>
+          <path d="M9 11h3"></path>
+        </svg>
+      </div>
+
+      <div class="info-content">
+        <span class="info-label">Fiche mémo</span>
+        <div class="info-value">Voir la fiche mémo PDF</div>
+      </div>
+    </a>
+  `;
+}
+
 function createPublicSpecialiteBlock(formation, index) {
   const publics = getPublicsForFormation(formation);
 
@@ -993,29 +1020,6 @@ function createContextBlock(contexte) {
         <span class="section-title">Contexte de la formation</span>
         <p class="context-text">${escapeHtml(contexte)}</p>
       </div>
-    </div>
-  `;
-}
-
-function createMemoButton(url) {
-  if (!hasValue(url)) return "";
-
-  return `
-    <div class="memo-button-wrap">
-      <a
-        class="memo-button"
-        href="${escapeHtml(url)}"
-        target="_blank"
-        rel="noopener noreferrer"
-      >
-        <svg viewBox="0 0 24 24" fill="none" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-          <path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9Z"></path>
-          <path d="M14 3v6h6"></path>
-          <path d="M9 15h6"></path>
-          <path d="M9 11h3"></path>
-        </svg>
-        Voir la fiche mémo PDF
-      </a>
     </div>
   `;
 }
@@ -1216,12 +1220,10 @@ function renderCatalogue(data) {
                   ${createInfoBlock("Formateur(s)", formateurs)}
                   ${createInfoBlock("Prise en charge", formation.priseEnCharge)}
                   ${createInfoBlock("Indemnités PS", formation.indemnitesPs)}
+                  ${createMemoInfoBlock(formation.ficheMemoPdf)}
                 </div>
-                ${createMemoButton(formation.ficheMemoPdf)}
               </aside>
             </div>
-
-            
           </div>
         </div>
       </article>
