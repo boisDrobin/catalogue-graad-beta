@@ -85,24 +85,66 @@
           </div>
 
           <div class="filter-group">
-            <label for="filter-format">Format</label>
-            <select id="filter-format">
-              <option value="">Tous</option>
-            </select>
+            <label>Format</label>
+
+            <div class="multi-filter" data-filter="format">
+              <button
+                type="button"
+                class="multi-filter-button"
+                id="filter-format-button"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <span class="multi-filter-label">Tous</span>
+                <span class="multi-filter-arrow" aria-hidden="true">⌄</span>
+              </button>
+
+              <div class="multi-filter-menu" id="filter-format-menu" hidden>
+                <div class="multi-filter-options" id="filter-format-options"></div>
+              </div>
+            </div>
           </div>
 
           <div class="filter-group">
-            <label for="filter-type-action">Typologie</label>
-            <select id="filter-type-action">
-              <option value="">Tous</option>
-            </select>
+            <label>Typologie</label>
+
+            <div class="multi-filter" data-filter="type-action">
+              <button
+                type="button"
+                class="multi-filter-button"
+                id="filter-type-action-button"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <span class="multi-filter-label">Toutes</span>
+                <span class="multi-filter-arrow" aria-hidden="true">⌄</span>
+              </button>
+
+              <div class="multi-filter-menu" id="filter-type-action-menu" hidden>
+                <div class="multi-filter-options" id="filter-type-action-options"></div>
+              </div>
+            </div>
           </div>
 
           <div class="filter-group">
-            <label for="filter-financement">Financement</label>
-            <select id="filter-financement">
-              <option value="">Tous</option>
-            </select>
+            <label>Financement</label>
+
+            <div class="multi-filter" data-filter="financement">
+              <button
+                type="button"
+                class="multi-filter-button"
+                id="filter-financement-button"
+                aria-haspopup="true"
+                aria-expanded="false"
+              >
+                <span class="multi-filter-label">Tous</span>
+                <span class="multi-filter-arrow" aria-hidden="true">⌄</span>
+              </button>
+
+              <div class="multi-filter-menu" id="filter-financement-menu" hidden>
+                <div class="multi-filter-options" id="filter-financement-options"></div>
+              </div>
+            </div>
           </div>
 
           <div class="filter-group filter-search">
