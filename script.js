@@ -4,7 +4,7 @@ let activePublicFamily = "medecins";
 let activeSpecialty = "";
 
 const CSV_PATH = "./data/data.csv";
-const CSV_IMPORT_DATE = "2026-05-04";
+const CSV_IMPORT_DATE = "2026-05-06";
 
 const multiFilterState = {
   format: [],
@@ -1616,17 +1616,9 @@ function renderCurrentView() {
     return sum + formation.sessions.length;
   }, 0);
 
-  const inscritCount = filteredFormations.reduce((sum, formation) => {
-    return sum + formation.sessions.reduce((sessionSum, session) => {
-      const value = Number(cleanText(session.nombreInscrits).replace(",", "."));
-      return sessionSum + (Number.isNaN(value) ? 0 : value);
-    }, 0);
-  }, 0);
-
-  count.textContent =
-    `${filteredFormations.length} formation${filteredFormations.length > 1 ? "s" : ""} affichée${filteredFormations.length > 1 ? "s" : ""}` +
-    ` · ${sessionCount} session${sessionCount > 1 ? "s" : ""}` +
-    ` · ${formatNumber(inscritCount)} inscrit${inscritCount > 1 ? "s" : ""}`;
+ count.textContent =
+  `${filteredFormations.length} formation${filteredFormations.length > 1 ? "s" : ""} affichée${filteredFormations.length > 1 ? "s" : ""}` +
+  ` · ${sessionCount} session${sessionCount > 1 ? "s" : ""}`;
 
   renderCatalogue(filteredFormations);
 }
