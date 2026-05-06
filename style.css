@@ -639,9 +639,9 @@ h1 {
   justify-content: center;
   border-radius: var(--radius-pill);
   background: rgba(255, 255, 255, 0.72);
-  color: currentColor;
+  color: #4b5563;
   font-size: 14px;
-  font-weight: 800;
+  font-weight: 300;
   line-height: 1;
 }
 
