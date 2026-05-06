@@ -1202,7 +1202,6 @@ function renderCatalogue(data) {
               <div class="formation-main">
                 ${createContextBlock(formation.contexte)}
                 ${createSessionsBlock(formation.sessions)}
-                ${createMemoButton(formation.ficheMemoPdf)}
               </div>
 
               <aside class="formation-sidebar">
@@ -1220,6 +1219,8 @@ function renderCatalogue(data) {
                 </div>
               </aside>
             </div>
+
+            ${createMemoButton(formation.ficheMemoPdf)}
           </div>
         </div>
       </article>
