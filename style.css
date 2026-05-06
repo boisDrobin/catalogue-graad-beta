@@ -230,19 +230,22 @@ h1 {
   border-color: #c8b17a;
 }
 
+/* État actif par défaut */
+
 .public-pill.is-active {
   background: var(--accent);
   color: #ffffff;
   border-color: var(--accent);
-  box-shadow: 0 8px 18px rgba(153, 135, 78, 0.18);
+  box-shadow: 0 5px 12px rgba(153, 135, 78, 0.08);
 }
+
 /* Bouton Tous actif : doré Graad */
 
 .public-pill.is-active[data-public-value=""] {
   background: var(--accent);
   color: #ffffff;
   border-color: var(--accent);
-  box-shadow: 0 8px 18px rgba(153, 135, 78, 0.18);
+  box-shadow: 0 5px 12px rgba(153, 135, 78, 0.08);
 }
 
 /* Publics actifs : rappel des couleurs des badges */
@@ -251,42 +254,42 @@ h1 {
   background: #eff6ff;
   color: #1d4ed8;
   border-color: #93c5fd;
-  box-shadow: 0 8px 18px rgba(29, 78, 216, 0.14);
+  box-shadow: 0 5px 12px rgba(29, 78, 216, 0.08);
 }
 
 .public-pill.is-active[data-public-value="infirmiers"] {
   background: #ecfeff;
   color: #0f766e;
   border-color: #67e8f9;
-  box-shadow: 0 8px 18px rgba(15, 118, 110, 0.14);
+  box-shadow: 0 5px 12px rgba(15, 118, 110, 0.08);
 }
 
 .public-pill.is-active[data-public-value="pharmaciens"] {
   background: #f0fdf4;
   color: #15803d;
   border-color: #86efac;
-  box-shadow: 0 8px 18px rgba(21, 128, 61, 0.14);
+  box-shadow: 0 5px 12px rgba(21, 128, 61, 0.08);
 }
 
 .public-pill.is-active[data-public-value="sages-femmes"] {
   background: #fdf2f8;
   color: #be185d;
   border-color: #f9a8d4;
-  box-shadow: 0 8px 18px rgba(190, 24, 93, 0.14);
+  box-shadow: 0 5px 12px rgba(190, 24, 93, 0.08);
 }
 
 .public-pill.is-active[data-public-value="kines"] {
   background: #fff7ed;
   color: #c2410c;
   border-color: #fdba74;
-  box-shadow: 0 8px 18px rgba(194, 65, 12, 0.14);
+  box-shadow: 0 5px 12px rgba(194, 65, 12, 0.08);
 }
 
 .public-pill.is-active[data-public-value="dentistes"] {
   background: #eef2ff;
   color: #4338ca;
   border-color: #a5b4fc;
-  box-shadow: 0 8px 18px rgba(67, 56, 202, 0.14);
+  box-shadow: 0 5px 12px rgba(67, 56, 202, 0.08);
 }
 
 .advanced-filters {
