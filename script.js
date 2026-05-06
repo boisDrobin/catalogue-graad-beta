@@ -966,8 +966,8 @@ function createMemoInfoBlock(url) {
       </div>
 
       <div class="info-content">
-        <span class="info-label">Fiche mémo</span>
-        <div class="info-value">Voir la fiche mémo PDF</div>
+        <span class="info-label">Fiche mémo PDF</span>
+        <div class="info-value">Voir la fiche</div>
       </div>
     </a>
   `;
