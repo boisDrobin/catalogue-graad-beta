@@ -814,7 +814,6 @@ h1 {
 
 .memo-info-block .info-value {
   color: var(--accent-dark);
-  font-weight: 800;
 }
 
 .memo-info-block .info-icon svg {
