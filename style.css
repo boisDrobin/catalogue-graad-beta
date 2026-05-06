@@ -839,11 +839,19 @@ h1 {
   white-space: pre-line;
 }
 
+/* BOUTON FICHE MÉMO */
+
+.memo-button-wrap {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 18px;
+}
+
 .memo-button {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  margin-top: 14px;
+  gap: 8px;
   padding: 10px 14px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--accent);
@@ -853,12 +861,21 @@ h1 {
   font-weight: 700;
   text-decoration: none;
   box-shadow: 0 8px 18px rgba(153, 135, 78, 0.18);
-  transition: transform 0.2s ease, background 0.2s ease;
+  transition: transform 0.2s ease, background 0.2s ease, box-shadow 0.2s ease;
 }
 
 .memo-button:hover {
   transform: translateY(-1px);
   background: #8a7944;
+  border-color: #8a7944;
+  box-shadow: 0 12px 22px rgba(153, 135, 78, 0.22);
+}
+
+.memo-button svg {
+  width: 16px;
+  height: 16px;
+  stroke: currentColor;
+  flex: 0 0 auto;
 }
 
 /* SESSION CARDS */
@@ -1128,6 +1145,14 @@ h1 {
 
   .formation-sidebar .info-value {
     font-size: 13px;
+  }
+
+  .memo-button-wrap {
+    justify-content: stretch;
+  }
+
+  .memo-button {
+    width: 100%;
   }
 
   .session-card-header {
