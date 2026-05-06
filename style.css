@@ -638,8 +638,8 @@ h1 {
   align-items: center;
   justify-content: center;
   border-radius: var(--radius-pill);
-  background: rgba(255, 255, 255, 0.72);
-  color: #000000;
+  background: color-mix(in srgb, currentColor 58%, transparent);
+  color: #ffffff;
   font-size: 14px;
   font-weight: 300;
   line-height: 1;
