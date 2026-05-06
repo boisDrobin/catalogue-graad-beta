@@ -4,7 +4,7 @@ let activePublicFamily = "medecins";
 let activeSpecialty = "";
 
 const CSV_PATH = "./data/data.csv";
-const CSV_IMPORT_DATE = "2026-05-06";
+const CSV_IMPORT_DATE = "2026-05-04";
 
 const multiFilterState = {
   format: [],
@@ -1530,6 +1530,148 @@ function resetMultiFilters() {
 }
 
 /* ----------------------------- */
+/* FILTRES ACTIFS */
+/* ----------------------------- */
+
+function getPublicFamilyLabel(value) {
+  const labels = {
+    medecins: "Médecins",
+    infirmiers: "Infirmiers",
+    pharmaciens: "Pharmaciens",
+    "sages-femmes": "Sages-femmes",
+    kines: "Kinésithérapeutes",
+    dentistes: "Dentistes"
+  };
+
+  return labels[value] || value;
+}
+
+function getActiveTypeActionLabel(value) {
+  return getTypeActionShortLabel(value) || getTypeActionFilterLabel(value) || value;
+}
+
+function createActiveFilterBadge(type, value, label, extraClass = "") {
+  return `
+    <button
+      type="button"
+      class="active-filter-badge ${extraClass}"
+      data-filter-type="${escapeHtml(type)}"
+      data-filter-value="${escapeHtml(value)}"
+      aria-label="Retirer le filtre ${escapeHtml(label)}"
+    >
+      <span>${escapeHtml(label)}</span>
+      <span class="active-filter-remove" aria-hidden="true">×</span>
+    </button>
+  `;
+}
+
+function renderActiveFilters() {
+  const container = document.getElementById("active-filters");
+  if (!container) return;
+
+  const badges = [];
+
+  if (activePublicFamily) {
+    badges.push(createActiveFilterBadge(
+      "public",
+      activePublicFamily,
+      getPublicFamilyLabel(activePublicFamily),
+      "active-filter-public"
+    ));
+  }
+
+  if (activeSpecialty) {
+    badges.push(createActiveFilterBadge(
+      "specialty",
+      activeSpecialty,
+      activeSpecialty.replace(/^Médecin\s-\s/, ""),
+      "active-filter-specialty"
+    ));
+  }
+
+  multiFilterState.format.forEach(value => {
+    badges.push(createActiveFilterBadge(
+      "format",
+      value,
+      value,
+      "active-filter-format"
+    ));
+  });
+
+  multiFilterState["type-action"].forEach(value => {
+    badges.push(createActiveFilterBadge(
+      "type-action",
+      value,
+      getActiveTypeActionLabel(value),
+      "active-filter-type-action"
+    ));
+  });
+
+  multiFilterState.financement.forEach(value => {
+    badges.push(createActiveFilterBadge(
+      "financement",
+      value,
+      value,
+      "active-filter-financement"
+    ));
+  });
+
+  container.innerHTML = badges.join("");
+
+  bindActiveFilterBadges();
+}
+
+function removeMultiFilterValue(filterName, value) {
+  multiFilterState[filterName] = multiFilterState[filterName].filter(item => item !== value);
+
+  const container = document.getElementById(`filter-${filterName}-options`);
+  if (container) {
+    container.querySelectorAll("input[type='checkbox']").forEach(input => {
+      if (input.value === value) {
+        input.checked = false;
+      }
+    });
+  }
+
+  updateMultiFilterButton(filterName);
+}
+
+function bindActiveFilterBadges() {
+  document.querySelectorAll(".active-filter-badge").forEach(button => {
+    button.addEventListener("click", () => {
+      const type = button.getAttribute("data-filter-type");
+      const value = button.getAttribute("data-filter-value");
+
+      if (type === "public") {
+        activePublicFamily = "";
+        activeSpecialty = "";
+        syncPublicButtons();
+        updateSpecialtyFilterOptions();
+      }
+
+      if (type === "specialty") {
+        activeSpecialty = "";
+        updateSpecialtyFilterOptions();
+      }
+
+      if (type === "format") {
+        removeMultiFilterValue("format", value);
+      }
+
+      if (type === "type-action") {
+        removeMultiFilterValue("type-action", value);
+      }
+
+      if (type === "financement") {
+        removeMultiFilterValue("financement", value);
+      }
+
+      applyFilters();
+    });
+  });
+}
+
+/* ----------------------------- */
 /* FILTRES */
 /* ----------------------------- */
 
@@ -1616,10 +1758,11 @@ function renderCurrentView() {
     return sum + formation.sessions.length;
   }, 0);
 
- count.textContent =
-  `${filteredFormations.length} formation${filteredFormations.length > 1 ? "s" : ""} affichée${filteredFormations.length > 1 ? "s" : ""}` +
-  ` · ${sessionCount} session${sessionCount > 1 ? "s" : ""}`;
+  count.textContent =
+    `${filteredFormations.length} formation${filteredFormations.length > 1 ? "s" : ""} affichée${filteredFormations.length > 1 ? "s" : ""}` +
+    ` · ${sessionCount} session${sessionCount > 1 ? "s" : ""}`;
 
+  renderActiveFilters();
   renderCatalogue(filteredFormations);
 }
 
