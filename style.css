@@ -846,6 +846,10 @@ h1 {
   justify-content: flex-end;
   margin-top: 18px;
 }
+.formation-sidebar .memo-button-wrap {
+  margin-top: 14px;
+  justify-content: flex-end;
+}
 
 .memo-button {
   display: inline-flex;
