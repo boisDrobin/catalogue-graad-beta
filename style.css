@@ -440,6 +440,7 @@ h1 {
   padding: 8px 9px;
   border-radius: 11px;
   color: #2b261d;
+  font-family: inherit;
   font-size: 12px;
   font-weight: 500;
   line-height: 1.3;
@@ -452,8 +453,9 @@ h1 {
   appearance: none;
   border: 0;
   background: transparent;
-  font-family: inherit;
   text-align: left;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 .single-filter-option:hover,
@@ -485,11 +487,6 @@ h1 {
   font-weight: 900;
 }
 
-.single-filter-option {
-  overflow: hidden;
-  text-overflow: ellipsis;
-}
-
 .multi-filter-option input[type="checkbox"] {
   appearance: none;
   width: 16px !important;
@@ -500,9 +497,9 @@ h1 {
   max-height: 16px;
   padding: 0 !important;
   margin: 0;
-  border: 1px solid #cdbf9f;
+  border: 1px solid #ddd2bd;
   border-radius: 5px;
-  background: #ffffff;
+  background: #fffdf8;
   cursor: pointer;
   position: relative;
   box-shadow: 0 1px 2px rgba(40, 33, 20, 0.04);
@@ -539,6 +536,11 @@ h1 {
   overflow: hidden;
   text-overflow: ellipsis;
   white-space: nowrap;
+  color: #2b261d;
+  font-family: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 1.3;
 }
 
 /* Largeurs spécifiques */
