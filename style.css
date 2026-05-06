@@ -258,6 +258,7 @@ h1 {
   display: flex;
   flex-direction: column;
   gap: 9px;
+  position: relative;
 }
 
 .filter-group label {
@@ -299,6 +300,159 @@ h1 {
   color: #9a9286;
   cursor: not-allowed;
   border-color: #ddd4c5;
+}
+
+/* MULTISELECT FILTERS */
+
+.multi-filter {
+  position: relative;
+  width: 100%;
+}
+
+.multi-filter-button {
+  width: 100%;
+  min-height: 50px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 0 14px 0 16px;
+  border: 1px solid var(--border-strong);
+  border-radius: 16px;
+  outline: none;
+  background: #ffffff;
+  color: var(--text);
+  font-family: inherit;
+  font-size: 14px;
+  font-weight: 500;
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 1px 2px rgba(40, 33, 20, 0.03);
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease,
+    transform 0.2s ease;
+}
+
+.multi-filter-button:hover {
+  border-color: #cbbb9d;
+  background: #ffffff;
+}
+
+.multi-filter-button:focus,
+.multi-filter-button[aria-expanded="true"] {
+  border-color: rgba(153, 135, 78, 0.7);
+  box-shadow: 0 0 0 4px rgba(153, 135, 78, 0.14);
+}
+
+.multi-filter-label {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.multi-filter-arrow {
+  flex: 0 0 auto;
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-pill);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #f4efdf;
+  color: var(--accent-dark);
+  font-size: 14px;
+  transition: transform 0.2s ease;
+}
+
+.multi-filter-button[aria-expanded="true"] .multi-filter-arrow {
+  transform: rotate(180deg);
+}
+
+.multi-filter-menu {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  right: 0;
+  z-index: 80;
+  padding: 8px;
+  border: 1px solid #e7dfd1;
+  border-radius: 16px;
+  background: #ffffff;
+  box-shadow: 0 18px 40px rgba(40, 33, 20, 0.12);
+}
+
+.multi-filter-menu[hidden] {
+  display: none;
+}
+
+.multi-filter-options {
+  display: grid;
+  gap: 4px;
+  max-height: 260px;
+  overflow: auto;
+  padding: 2px;
+}
+
+.multi-filter-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 10px;
+  border-radius: 12px;
+  color: #2b261d;
+  font-size: 13px;
+  font-weight: 600;
+  line-height: 1.35;
+  cursor: pointer;
+  transition: background 0.2s ease, color 0.2s ease;
+}
+
+.multi-filter-option:hover {
+  background: #fbf7ef;
+}
+
+.multi-filter-option input {
+  appearance: none;
+  width: 18px;
+  height: 18px;
+  min-width: 18px;
+  margin: 0;
+  border: 1px solid #cdbf9f;
+  border-radius: 6px;
+  background: #ffffff;
+  cursor: pointer;
+  position: relative;
+  box-shadow: 0 1px 2px rgba(40, 33, 20, 0.04);
+}
+
+.multi-filter-option input:checked {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.multi-filter-option input:checked::after {
+  content: "✓";
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.multi-filter-option input:focus {
+  outline: none;
+  box-shadow: 0 0 0 4px rgba(153, 135, 78, 0.14);
+}
+
+.multi-filter-option span {
+  flex: 1;
+  min-width: 0;
 }
 
 .search-wrap {
@@ -782,7 +936,7 @@ h1 {
   word-break: break-word;
 }
 
-/* ENCARD FICHE MÉMO */
+/* ENCART FICHE MÉMO */
 
 .info-block-link {
   text-decoration: none;
@@ -1100,6 +1254,12 @@ h1 {
 
   .reset-button {
     width: 100%;
+  }
+
+  .multi-filter-menu {
+    position: static;
+    margin-top: 8px;
+    box-shadow: 0 10px 24px rgba(40, 33, 20, 0.08);
   }
 
   .formation-header {
