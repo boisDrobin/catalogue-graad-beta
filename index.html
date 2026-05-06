@@ -78,16 +78,31 @@
 
         <div class="filters-grid">
           <div class="filter-group">
-            <label for="filter-specialty">Spécialité médicale</label>
-            <select id="filter-specialty" disabled>
-              <option value="">Aucune</option>
-            </select>
+            <label>Spécialité médicale</label>
+
+            <div class="single-filter" data-filter="specialty">
+              <button
+                type="button"
+                class="single-filter-button"
+                id="filter-specialty-button"
+                aria-haspopup="true"
+                aria-expanded="false"
+                disabled
+              >
+                <span class="single-filter-label">Aucune</span>
+                <span class="single-filter-arrow" aria-hidden="true">⌄</span>
+              </button>
+
+              <div class="single-filter-menu" id="filter-specialty-menu" hidden>
+                <div class="single-filter-options" id="filter-specialty-options"></div>
+              </div>
+            </div>
           </div>
 
           <div class="filter-group">
             <label>Format</label>
 
-            <div class="multi-filter" data-filter="format">
+            <div class="multi-filter multi-filter-format" data-filter="format">
               <button
                 type="button"
                 class="multi-filter-button"
@@ -108,7 +123,7 @@
           <div class="filter-group">
             <label>Typologie</label>
 
-            <div class="multi-filter" data-filter="type-action">
+            <div class="multi-filter multi-filter-type-action" data-filter="type-action">
               <button
                 type="button"
                 class="multi-filter-button"
@@ -129,7 +144,7 @@
           <div class="filter-group">
             <label>Financement</label>
 
-            <div class="multi-filter" data-filter="financement">
+            <div class="multi-filter multi-filter-financement" data-filter="financement">
               <button
                 type="button"
                 class="multi-filter-button"
