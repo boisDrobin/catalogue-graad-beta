@@ -1,10 +1,9 @@
 let formations = [];
 let filteredFormations = [];
 let activePublicFamily = "medecins";
-let activeView = "catalogue";
 
 const CSV_PATH = "./data/data.csv";
-const CSV_IMPORT_DATE = "2026-05-05";
+const CSV_IMPORT_DATE = "2026-05-04";
 
 /* ----------------------------- */
 /* UTILITAIRES */
@@ -335,53 +334,6 @@ function formatDateTimeFr(value) {
   if (!date) return cleanText(value);
 
   return `${formatDateFr(date)} à ${formatTimeFr(date)}`;
-}
-
-function getSessionMainDate(session) {
-  return (
-    session.dateClasseVirtuelle ||
-    session.datePremierJourPresentiel ||
-    session.dateDebut ||
-    session.debutU1 ||
-    ""
-  );
-}
-
-function getSessionMainDateObject(session) {
-  return parseDate(getSessionMainDate(session));
-}
-
-function getSessionMainTimeLabel(session) {
-  const main = getSessionMainDate(session);
-  const date = parseDate(main);
-
-  if (!date) return "";
-
-  return formatTimeFr(date);
-}
-
-function getDateKey(date) {
-  if (!date) return "9999-99-99";
-
-  const year = date.getFullYear();
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const day = String(date.getDate()).padStart(2, "0");
-
-  return `${year}-${month}-${day}`;
-}
-
-function getDateLabelFromKey(key) {
-  if (!key || key === "9999-99-99") return "Date à préciser";
-
-  const [year, month, day] = key.split("-");
-  const date = new Date(`${year}-${month}-${day}T00:00:00`);
-
-  return new Intl.DateTimeFormat("fr-FR", {
-    weekday: "long",
-    day: "2-digit",
-    month: "long",
-    year: "numeric"
-  }).format(date);
 }
 
 /* ----------------------------- */
@@ -850,8 +802,8 @@ function createFormationFromGroup(referenceAction, rows) {
   const sessions = visibleSessionRows
     .map(createSessionFromRow)
     .sort((a, b) => {
-      const dateA = getSessionMainDateObject(a);
-      const dateB = getSessionMainDateObject(b);
+      const dateA = parseDate(a.dateClasseVirtuelle || a.datePremierJourPresentiel || a.dateDebut || a.debutU1 || "");
+      const dateB = parseDate(b.dateClasseVirtuelle || b.datePremierJourPresentiel || b.dateDebut || b.debutU1 || "");
 
       if (!dateA && !dateB) return a.nomSession.localeCompare(b.nomSession, "fr");
       if (!dateA) return 1;
@@ -1327,131 +1279,6 @@ function bindInlineToggles() {
 }
 
 /* ----------------------------- */
-/* RENDER CALENDRIER */
-/* ----------------------------- */
-
-function getCalendarSessions(data) {
-  return data
-    .flatMap(formation => {
-      return formation.sessions.map(session => ({
-        formation,
-        session,
-        date: getSessionMainDateObject(session)
-      }));
-    })
-    .sort((a, b) => {
-      if (!a.date && !b.date) return 0;
-      if (!a.date) return 1;
-      if (!b.date) return -1;
-      return a.date - b.date;
-    });
-}
-
-function renderCalendar(data) {
-  const container = document.getElementById("calendar-view");
-  const calendarSessions = getCalendarSessions(data);
-
-  if (!calendarSessions.length) {
-    container.innerHTML = `
-      <div class="empty-state">
-        Aucune session ne correspond aux filtres sélectionnés.
-      </div>
-    `;
-    return;
-  }
-
-  const groups = new Map();
-
-  calendarSessions.forEach(item => {
-    const key = item.date ? getDateKey(item.date) : "9999-99-99";
-
-    if (!groups.has(key)) {
-      groups.set(key, []);
-    }
-
-    groups.get(key).push(item);
-  });
-
-  container.innerHTML = Array.from(groups.entries()).map(([dateKey, items]) => {
-    return `
-      <article class="calendar-day">
-        <div class="calendar-day-header">
-          ${escapeHtml(getDateLabelFromKey(dateKey))}
-        </div>
-
-        <div class="calendar-sessions">
-          ${items.map(({ formation, session }) => {
-            const timeLabel = getSessionMainTimeLabel(session);
-            const publicLabel = getPublicBadgeLabel(formation);
-            const publicBadgeClass = getPublicBadgeClass(formation);
-            const typeActionShortLabel = getTypeActionShortLabel(formation.typeAction);
-            const typeActionBadgeClass = getTypeActionBadgeClass(formation.typeAction);
-            const financementLabel = formation.financement;
-            const financementBadgeClass = getFinancementBadgeClass(formation.categorieProduit);
-            const inscrits = hasValue(session.nombreInscrits)
-              ? formatNumber(session.nombreInscrits)
-              : "0";
-            const effectif = hasValue(session.effectifMaximum)
-              ? formatNumber(session.effectifMaximum)
-              : "-";
-
-            return `
-              <div class="calendar-session">
-                <div class="calendar-time">
-                  ${escapeHtml(timeLabel || "—")}
-                </div>
-
-                <div>
-                  <p class="calendar-title">
-                    ${escapeHtml(formation.titre || "Formation sans titre")}
-                  </p>
-                  <p class="calendar-meta">
-                    <span class="badge badge-public ${publicBadgeClass}">
-                      ${escapeHtml(publicLabel)}
-                    </span>
-
-                    ${formation.format ? `
-                      <span class="badge badge-format ${getFormatClass(formation.format).replace("format-", "badge-format-")}">
-                        ${escapeHtml(formation.format)}
-                      </span>
-                    ` : ""}
-
-                    ${typeActionShortLabel ? `
-                      <span class="badge badge-type-action ${typeActionBadgeClass}">
-                        ${escapeHtml(typeActionShortLabel)}
-                      </span>
-                    ` : ""}
-
-                    ${financementLabel ? `
-                      <span class="badge badge-financement ${financementBadgeClass}">
-                        ${escapeHtml(financementLabel)}
-                      </span>
-                    ` : ""}
-
-                    ${session.nomSession ? ` · ${escapeHtml(getShortSessionName(session.nomSession))}` : ""}
-                  </p>
-                </div>
-
-                <div class="badges">
-                  ${session.etat ? `
-                    <span class="badge ${getStatusBadgeClass(session.etat)}">
-                      ${escapeHtml(session.etat)}
-                    </span>
-                  ` : ""}
-                  <span class="badge badge-session-count">
-                    ${escapeHtml(`${inscrits} / ${effectif}`)}
-                  </span>
-                </div>
-              </div>
-            `;
-          }).join("")}
-        </div>
-      </article>
-    `;
-  }).join("");
-}
-
-/* ----------------------------- */
 /* FILTRES */
 /* ----------------------------- */
 
@@ -1523,8 +1350,6 @@ function applyFilters() {
 }
 
 function renderCurrentView() {
-  const catalogueView = document.getElementById("catalogue-view");
-  const calendarView = document.getElementById("calendar-view");
   const count = document.getElementById("results-count");
 
   const sessionCount = filteredFormations.reduce((sum, formation) => {
@@ -1543,20 +1368,7 @@ function renderCurrentView() {
     ` · ${sessionCount} session${sessionCount > 1 ? "s" : ""}` +
     ` · ${formatNumber(inscritCount)} inscrit${inscritCount > 1 ? "s" : ""}`;
 
-  if (activeView === "catalogue") {
-    catalogueView.classList.remove("is-hidden");
-    calendarView.classList.add("is-hidden");
-
-    renderCatalogue(filteredFormations);
-    return;
-  }
-
-  if (activeView === "calendrier") {
-    catalogueView.classList.add("is-hidden");
-    calendarView.classList.remove("is-hidden");
-
-    renderCalendar(filteredFormations);
-  }
+  renderCatalogue(filteredFormations);
 }
 
 function resetFilters() {
@@ -1577,13 +1389,6 @@ function syncPublicButtons() {
   document.querySelectorAll(".public-pill").forEach(button => {
     const value = button.getAttribute("data-public-value") || "";
     button.classList.toggle("is-active", value === activePublicFamily);
-  });
-}
-
-function syncViewTabs() {
-  document.querySelectorAll(".view-tab").forEach(button => {
-    const value = button.getAttribute("data-view") || "catalogue";
-    button.classList.toggle("is-active", value === activeView);
   });
 }
 
@@ -1657,16 +1462,7 @@ function initFilters() {
     });
   });
 
-  document.querySelectorAll(".view-tab").forEach(button => {
-    button.addEventListener("click", () => {
-      activeView = button.getAttribute("data-view") || "catalogue";
-      syncViewTabs();
-      renderCurrentView();
-    });
-  });
-
   syncPublicButtons();
-  syncViewTabs();
   updateSpecialtyFilterOptions();
 }
 
